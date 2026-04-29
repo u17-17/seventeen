@@ -27,7 +27,7 @@ export const navItems = [
 
 export const hero = {
   englishTitle: "HELLO, I'M YAN",
-  chineseTitle: "你好，我是龙",
+  chineseTitle: "你好，我是闫老师",
   subtitle: "高中数学 / 物理一对一辅导",
   description:
     "面向高一高二学生，专注解决“听得懂但做不出”“分数不稳定”“模型题思路混乱”等问题。",

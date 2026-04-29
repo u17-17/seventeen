@@ -4,8 +4,13 @@ import { about, fadeUp, staggerContainer } from "../data/siteData.js";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="scroll-mt-24 bg-neutral-50 py-24 sm:py-32">
-      <div className="section-shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+    <section
+      id="about"
+      className="relative scroll-mt-24 overflow-hidden bg-[#f7f7f5] py-24 sm:py-32"
+    >
+      <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(0,0,0,0.028)_0px,rgba(0,0,0,0.028)_1px,transparent_1px,transparent_18px)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(255,255,255,0.72),transparent_58%)]" />
+      <div className="section-shell relative grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <SectionTitle eyebrow={about.eyebrow} title={about.title} />
 
         <motion.div

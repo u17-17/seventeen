@@ -12,10 +12,17 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen overflow-hidden bg-white pt-28 sm:pt-32"
+      className="relative min-h-screen overflow-hidden bg-[#fafaf8] pt-28 sm:pt-32"
     >
-      <div className="absolute inset-0 bg-dot-grid [background-size:22px_22px] opacity-[0.28]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.105)_1.15px,transparent_0)] [background-size:26px_26px]" />
+      <div className="absolute inset-y-0 left-0 w-[40vw] bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.14)_1.2px,transparent_0)] [background-size:23px_23px] [mask-image:linear-gradient(90deg,black,transparent)] opacity-80" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,250,248,0.86),rgba(250,250,248,0.58)_42%,transparent_80%)]" />
       <div className="absolute left-1/2 top-24 h-px w-[86vw] -translate-x-1/2 bg-neutral-950/10" />
+      <div className="absolute left-10 top-[5.75rem] hidden h-1 w-14 rounded-full bg-neutral-950/70 md:block" />
+      <div className="pointer-events-none absolute right-[18vw] top-[20vh] hidden h-16 w-16 rounded-full border border-neutral-950/10 lg:block" />
+      <div className="pointer-events-none absolute bottom-[29vh] right-[22vw] hidden text-2xl font-light leading-none text-neutral-950/20 md:block">
+        +
+      </div>
       <div className="section-shell relative flex min-h-[calc(100vh-7rem)] flex-col justify-center pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
