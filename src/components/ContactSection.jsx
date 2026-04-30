@@ -86,9 +86,6 @@ export default function ContactSection() {
                   </div>
                 )}
               </div>
-              <p className="mx-auto mt-5 max-w-xs text-center text-sm leading-6 text-neutral-500">
-                后续将真实二维码图片放入 public/wechat-qr.png 即可自动显示。
-              </p>
             </div>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">

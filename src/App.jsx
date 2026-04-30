@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar.jsx";
 import Hero from "./components/Hero.jsx";
+import HeroDissolve from "./components/HeroDissolve.jsx";
 import AboutSection from "./components/AboutSection.jsx";
 import ProblemsSection from "./components/ProblemsSection.jsx";
 import MethodSection from "./components/MethodSection.jsx";
@@ -12,7 +13,7 @@ export default function App() {
     <div className="min-h-screen overflow-x-hidden bg-white text-neutral-950 antialiased">
       <Navbar />
       <main>
-        <Hero />
+        <HeroDissolve />
         <AboutSection />
         <ProblemsSection />
         <MethodSection />

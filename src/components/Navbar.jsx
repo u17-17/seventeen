@@ -31,8 +31,8 @@ export default function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-neutral-200/80 bg-white/78 shadow-[0_10px_40px_rgba(0,0,0,0.04)] backdrop-blur-xl"
-          : "border-b border-transparent bg-white/75 backdrop-blur-sm"
+          ? "border-b border-stone-200/80 bg-stone-50/90 shadow-[0_12px_38px_rgba(10,13,16,0.08)] backdrop-blur-xl"
+          : "border-b border-transparent bg-stone-50/90 shadow-[0_8px_28px_rgba(5,8,12,0.06)] backdrop-blur-md"
       }`}
     >
       <nav className="section-shell flex h-16 items-center justify-between sm:h-[72px]">

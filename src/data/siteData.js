@@ -154,7 +154,7 @@ export const contact = {
   infoItems: ["学生年级", "补习科目", "当前分数", "目标分数", "主要问题", "可上课时间"],
   description:
     "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。",
-  qrPath: "/wechat-qr.png",
+  qrPath: "/wechat-qr.jpg",
   qrFallback: "此处替换为微信二维码",
   buttons: [
     { label: "添加微信咨询", href: "#contact", icon: MessageCircle },
