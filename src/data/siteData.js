@@ -14,6 +14,7 @@ import {
   Radar,
   Route,
   Sparkles,
+  Star,
   Target,
 } from "lucide-react";
 
@@ -146,6 +147,32 @@ export const experiences = {
   ],
 };
 
+export const testimonials = {
+  title: "学生与家长反馈",
+  eyebrow: "Testimonials",
+  subtitle: "真实的学习变化，来自学生和家长的评价。",
+  items: [
+    {
+      quote:
+        "以前做函数题总是凭感觉，现在会先拆条件再选方法，准确率提高了很多。",
+      author: "高一学生家长",
+      tag: "高中数学",
+    },
+    {
+      quote:
+        "闫老师讲题很有耐心，不会直接给答案，而是引导我自己想出来。物理大题终于有思路了。",
+      author: "高二学生",
+      tag: "高中物理",
+    },
+    {
+      quote:
+        "孩子从初中到高中不适应，闫老师帮他梳理了学习方法，期中考试进步明显。",
+      author: "高一学生家长",
+      tag: "初高衔接",
+    },
+  ],
+};
+
 export const contact = {
   title: "预约一次学习问题诊断",
   eyebrow: "Contact",
@@ -155,10 +182,11 @@ export const contact = {
   description:
     "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。",
   qrPath: "/wechat-qr.jpg",
-  qrFallback: "此处替换为微信二维码",
+  qrFallback: "请扫描上方二维码或点击下方按钮添加微信",
+  wechatId: "L07-929",
   buttons: [
-    { label: "添加微信咨询", href: "#contact", icon: MessageCircle },
-    { label: "预约学习诊断", href: "#contact", icon: ArrowUpRight },
+    { label: "复制微信号", icon: MessageCircle, action: "copyWechat" },
+    { label: "预约学习诊断", href: "#contact", icon: ArrowUpRight, action: "scroll" },
   ],
   extras: [
     { label: "周六日全天可约", icon: CalendarDays },

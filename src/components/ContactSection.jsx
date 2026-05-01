@@ -5,6 +5,17 @@ import { contact, fadeUp, staggerContainer } from "../data/siteData.js";
 
 export default function ContactSection() {
   const [qrLoaded, setQrLoaded] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyWechat = async () => {
+    try {
+      await navigator.clipboard.writeText(contact.wechatId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("请复制微信号：", contact.wechatId);
+    }
+  };
 
   return (
     <section
@@ -81,31 +92,34 @@ export default function ContactSection() {
                     className="h-full w-full rounded-2xl object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center rounded-2xl bg-white text-center text-base font-semibold leading-7 text-neutral-400">
-                    {contact.qrFallback}
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-2xl bg-white text-center">
+                    <div className="grid h-16 w-16 place-items-center rounded-full border-2 border-dashed border-neutral-300">
+                      <span className="text-2xl font-black text-neutral-300">?</span>
+                    </div>
+                    <p className="text-sm font-semibold leading-6 text-neutral-400">
+                      {contact.qrFallback}
+                    </p>
                   </div>
                 )}
               </div>
             </div>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {contact.buttons.map((button, index) => {
-                const Icon = button.icon;
-                return (
-                  <a
-                    key={button.label}
-                    href={button.href}
-                    className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-base font-semibold transition-transform duration-300 hover:-translate-y-1 ${
-                      index === 0
-                        ? "bg-neutral-950 text-white hover:bg-neutral-800"
-                        : "border border-neutral-300 bg-white text-neutral-950 hover:border-neutral-950"
-                    }`}
-                  >
-                    {button.label}
-                    <Icon size={18} />
-                  </a>
-                );
-              })}
+              <button
+                type="button"
+                onClick={handleCopyWechat}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 px-5 py-3.5 text-base font-semibold text-white transition-transform duration-300 hover:-translate-y-1 hover:bg-neutral-800"
+              >
+                {copied ? "已复制 ✓" : "复制微信号"}
+              </button>
+              <a
+                href="https://weixin.qq.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-white px-5 py-3.5 text-base font-semibold text-neutral-950 transition-transform duration-300 hover:-translate-y-1 hover:border-neutral-950"
+              >
+                打开微信
+              </a>
             </div>
           </motion.div>
         </motion.div>

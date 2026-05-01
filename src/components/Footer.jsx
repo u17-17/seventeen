@@ -1,9 +1,5 @@
 import { navItems, footer } from "../data/siteData.js";
-
-function scrollToTarget(href) {
-  const target = document.querySelector(href);
-  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+import { scrollToTarget } from "../utils/scroll.js";
 
 export default function Footer() {
   const CtaIcon = footer.ctaIcon;
@@ -46,7 +42,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-neutral-200 pt-6 text-sm text-neutral-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-neutral-200 pt-6 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <p>{footer.copyright}</p>
           <p>Personal tutor brand page.</p>
         </div>

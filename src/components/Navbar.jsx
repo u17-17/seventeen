@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { navItems } from "../data/siteData.js";
-
-function scrollToTarget(href) {
-  const target = document.querySelector(href);
-  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+import { scrollToTarget } from "../utils/scroll.js";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
