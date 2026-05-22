@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { navItems } from "../data/siteData.js";
-import { scrollToTarget } from "../utils/scroll.js";
+import { pageNavItems } from "../data/pageData.js";
+import { navigateToHref } from "../utils/scroll.js";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const mobilePanelRef = useRef(null);
+  const homeNavItems = navItems.filter((item) => item.href !== "#contact");
+  const desktopItems = [...homeNavItems, ...pageNavItems];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -15,9 +19,27 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const handlePointer = (event) => {
+      if (mobilePanelRef.current && !mobilePanelRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    const handleKey = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", handlePointer);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handlePointer);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open]);
+
   const handleClick = (href) => {
     setOpen(false);
-    scrollToTarget(href);
+    navigateToHref(href);
   };
 
   return (
@@ -27,43 +49,43 @@ export default function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-stone-200/80 bg-stone-50/90 shadow-[0_12px_38px_rgba(10,13,16,0.08)] backdrop-blur-xl"
-          : "border-b border-transparent bg-stone-50/90 shadow-[0_8px_28px_rgba(5,8,12,0.06)] backdrop-blur-md"
+          ? "border-b border-stone-200/70 bg-cream/85 shadow-[0_12px_38px_rgba(20,39,31,0.08)] backdrop-blur-xl"
+          : "border-b border-transparent bg-cream/70 backdrop-blur-md"
       }`}
     >
       <nav className="section-shell flex h-16 items-center justify-between sm:h-[72px]">
         <button
           type="button"
           onClick={() => handleClick("#hero")}
-          className="group flex items-center gap-3 text-left"
+          className="group flex min-h-11 items-center gap-3 text-left"
           aria-label="回到首页"
         >
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-neutral-950 text-[10px] font-black text-white transition-transform duration-300 group-hover:rotate-45">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-brand text-[10px] font-black text-cream transition-transform duration-300 group-hover:rotate-45">
             Y
           </span>
-          <span className="text-sm font-black tracking-[0.16em] text-neutral-950">
+          <span className="text-sm font-black tracking-[0.16em] text-brand-deep">
             YAN TUTOR
           </span>
         </button>
 
-        <div className="hidden items-center gap-1 rounded-full border border-neutral-200 bg-white/70 p-1 md:flex">
-          {navItems.map((item) => (
+        <div className="hidden items-center gap-0.5 rounded-full border border-brand/10 bg-white/70 p-1 lg:flex">
+          {desktopItems.map((item) => (
             <button
               key={item.href}
               type="button"
               onClick={() => handleClick(item.href)}
-              className="rounded-full px-4 py-2 text-sm font-medium text-neutral-500 transition-colors hover:bg-neutral-950 hover:text-white"
+              className="min-h-10 rounded-full px-4 py-2 text-sm font-semibold text-neutral-600 transition-colors hover:bg-brand hover:text-cream"
             >
               {item.label}
             </button>
           ))}
         </div>
 
-        <div className="hidden items-center md:flex">
+        <div className="hidden items-center lg:flex">
           <button
             type="button"
             onClick={() => handleClick("#contact")}
-            className="rounded-full bg-neutral-950 px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5 hover:bg-neutral-800"
+            className="btn-brand"
           >
             预约诊断
           </button>
@@ -72,7 +94,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
-          className="grid h-10 w-10 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-950 md:hidden"
+          className="grid h-11 w-11 place-items-center rounded-full border border-brand/15 bg-white text-brand-deep lg:hidden"
           aria-label={open ? "关闭导航" : "打开导航"}
           aria-expanded={open}
         >
@@ -80,34 +102,49 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          className="border-t border-neutral-100 bg-white/96 px-5 pb-5 pt-2 shadow-card md:hidden"
-        >
-          <div className="grid gap-2">
-            {navItems.map((item) => (
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            ref={mobilePanelRef}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="border-t border-brand/10 bg-white/95 px-5 pb-5 pt-2 shadow-card lg:hidden"
+          >
+            <div className="grid gap-1.5">
+              {homeNavItems.map((item) => (
+                <button
+                  key={item.href}
+                  type="button"
+                  onClick={() => handleClick(item.href)}
+                  className="rounded-2xl px-4 py-3 text-left text-base font-semibold text-neutral-700 hover:bg-cream"
+                >
+                  {item.label}
+                </button>
+              ))}
+              <div className="my-2 h-px bg-neutral-100" />
+              {pageNavItems.map((item) => (
+                <button
+                  key={item.href}
+                  type="button"
+                  onClick={() => handleClick(item.href)}
+                  className="rounded-2xl px-4 py-3 text-left text-base font-semibold text-neutral-700 hover:bg-cream"
+                >
+                  {item.label}
+                </button>
+              ))}
               <button
-                key={item.href}
                 type="button"
-                onClick={() => handleClick(item.href)}
-                className="rounded-2xl px-4 py-3 text-left text-base font-semibold text-neutral-700 hover:bg-neutral-100"
+                onClick={() => handleClick("#contact")}
+                className="mt-2 rounded-2xl bg-brand px-4 py-3 text-left text-base font-semibold text-cream hover:bg-brand-deep"
               >
-                {item.label}
+                预约诊断
               </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => handleClick("#contact")}
-              className="mt-2 rounded-2xl bg-neutral-950 px-4 py-3 text-left text-base font-semibold text-white"
-            >
-              预约诊断
-            </button>
-          </div>
-        </motion.div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }

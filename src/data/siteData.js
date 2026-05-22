@@ -1,5 +1,4 @@
 import {
-  ArrowUpRight,
   BookOpen,
   Brain,
   CalendarDays,
@@ -8,7 +7,6 @@ import {
   FileText,
   Layers3,
   MapPin,
-  MessageCircle,
   MoveRight,
   PenTool,
   Radar,
@@ -176,18 +174,15 @@ export const testimonials = {
 export const contact = {
   title: "预约一次学习问题诊断",
   eyebrow: "Contact",
-  subtitle: "不写价格，先沟通学生情况；适合再安排试听。",
-  infoTitle: "你可以先提供这些信息：",
+  subtitle:
+    "先不用急着报课，你可以先把学生的年级、分数、薄弱点发给我，我会判断当前最该补哪一块。",
+  infoTitle: "填写表单时可以参考：",
   infoItems: ["学生年级", "补习科目", "当前分数", "目标分数", "主要问题", "可上课时间"],
   description:
-    "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。",
+    "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。你可以先生成咨询信息，再复制到微信发送。",
   qrPath: "/wechat-qr.jpg",
-  qrFallback: "请扫描上方二维码或点击下方按钮添加微信",
+  qrFallback: "请复制微信号后在微信搜索添加",
   wechatId: "L07-929",
-  buttons: [
-    { label: "复制微信号", icon: MessageCircle, action: "copyWechat" },
-    { label: "预约学习诊断", href: "#contact", icon: ArrowUpRight, action: "scroll" },
-  ],
   extras: [
     { label: "周六日全天可约", icon: CalendarDays },
     { label: "平时晚上可沟通", icon: Clock3 },
