@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar.jsx";
 import AboutSection from "./components/AboutSection.jsx";
 import ProblemsSection from "./components/ProblemsSection.jsx";
@@ -98,6 +99,7 @@ export default function App() {
         </AnimatePresence>
       </main>
       <Footer />
+      <Analytics />
     </div>
   );
 }
