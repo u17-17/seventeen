@@ -7,15 +7,75 @@ import {
   Layers3,
   NotebookPen,
   Sparkles,
+  UserRound,
 } from "lucide-react";
 
 export const pageNavItems = [
-  { label: "FAQ", href: "#/faq" },
-  { label: "课堂复现", href: "#/classroom" },
-  { label: "教学案例", href: "#/cases" },
+  { label: "我的故事", href: "/story" },
+  { label: "FAQ", href: "/faq" },
+  { label: "课堂复现", href: "/classroom" },
+  { label: "教学案例", href: "/cases" },
 ];
 
 export const staticPages = {
+  story: {
+    slug: "story",
+    eyebrow: "Story",
+    title: "我的故事",
+    subtitle: "这是闫老师的教学故事。比起把自己包装成万能老师，我更想讲清楚：我为什么这样教，以及什么样的学生适合先来做一次诊断。",
+    icon: UserRound,
+    intro: {
+      title: "从一道题看见一个学生的学习方式",
+      body:
+        "很多学生不是不努力，而是一直用不适合自己的方式硬撑。我做一对一辅导时，会先看孩子怎么读题、怎么写第一步、哪里开始犹豫，再决定该补知识、补方法，还是补考试习惯。",
+      points: ["先诊断", "再拆问题", "最后安排训练"],
+    },
+    sections: [
+      {
+        title: "我为什么做一对一辅导",
+        items: [
+          {
+            label: "01",
+            title: "我见过太多“听懂了但不会做”",
+            content:
+              "学生上课点头，不代表真的会迁移。很多时候，问题藏在读题顺序、条件标注和第一步选择里。把这些过程拆开，比分散刷题更重要。",
+          },
+          {
+            label: "02",
+            title: "我更愿意把题讲慢一点",
+            content:
+              "一节课不是为了塞进更多题，而是让学生能说清楚为什么这样做。只要这条路径稳定了，后面做同类题才会真正变轻松。",
+          },
+          {
+            label: "03",
+            title: "家长需要看到过程，而不是只听结果",
+            content:
+              "我会尽量把课堂思路、错因和下一步安排讲清楚。分数变化很重要，但家长更需要知道孩子到底卡在哪里。",
+          },
+        ],
+      },
+      {
+        title: "适合先来沟通的情况",
+        items: [
+          {
+            title: "基础不算差，但分数总是不稳",
+            content: "这类学生通常不是全不会，而是题型识别、步骤规范或考试节奏出了问题。",
+            icon: BadgeCheck,
+          },
+          {
+            title: "数学大题没有切入点",
+            content: "重点会放在条件拆解、目标反推和常见模型识别，而不是直接背一堆套路。",
+            icon: Layers3,
+          },
+          {
+            title: "物理综合题容易混",
+            content: "先把受力、能量、电路等模型分清，再训练什么时候该用哪一种工具。",
+            icon: FileText,
+          },
+        ],
+      },
+    ],
+  },
   faq: {
     slug: "faq",
     eyebrow: "FAQ",

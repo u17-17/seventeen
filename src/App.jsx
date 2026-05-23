@@ -8,9 +8,10 @@ import ExperienceSection from "./components/ExperienceSection.jsx";
 import TestimonialsSection from "./components/TestimonialsSection.jsx";
 import ContactSection from "./components/ContactSection.jsx";
 import Footer from "./components/Footer.jsx";
+import Seo from "./components/Seo.jsx";
 import StaticPage from "./pages/StaticPage.jsx";
 import { staticPages } from "./data/pageData.js";
-import { getLegacyRedirectTarget, getPageRouteFromHash } from "./utils/routing.js";
+import { getLegacyRedirectTarget, getPageRouteFromUrl } from "./utils/routing.js";
 import { navigateToHref } from "./utils/scroll.js";
 
 const HeroDissolve = lazy(() => import("./components/HeroDissolve.jsx"));
@@ -50,12 +51,12 @@ export default function App() {
   const [pageRoute, setPageRoute] = useState(() =>
     getLegacyRedirectTarget(window.location.hash)
       ? null
-      : getPageRouteFromHash(window.location.hash),
+      : getPageRouteFromUrl(window.location.pathname, window.location.hash),
   );
   const page = pageRoute ? staticPages[pageRoute] : null;
 
   useEffect(() => {
-    const handleHashChange = () => {
+    const syncRoute = () => {
       const legacyTarget = getLegacyRedirectTarget(window.location.hash);
       if (legacyTarget) {
         setPageRoute(null);
@@ -63,12 +64,16 @@ export default function App() {
         return;
       }
 
-      setPageRoute(getPageRouteFromHash(window.location.hash));
+      setPageRoute(getPageRouteFromUrl(window.location.pathname, window.location.hash));
     };
 
-    handleHashChange();
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    syncRoute();
+    window.addEventListener("hashchange", syncRoute);
+    window.addEventListener("popstate", syncRoute);
+    return () => {
+      window.removeEventListener("hashchange", syncRoute);
+      window.removeEventListener("popstate", syncRoute);
+    };
   }, []);
 
   useEffect(() => {
@@ -83,6 +88,7 @@ export default function App() {
       >
         跳到主要内容
       </a>
+      <Seo page={page} />
       <Navbar />
       <main id="main-content">
         <AnimatePresence mode="wait" initial={false}>

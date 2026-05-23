@@ -180,7 +180,7 @@ export const contact = {
   infoItems: ["学生年级", "补习科目", "当前分数", "目标分数", "主要问题", "可上课时间"],
   description:
     "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。你可以先生成咨询信息，再复制到微信发送。",
-  qrPath: "/wechat-qr.jpg",
+  qrPath: "/wechat-qr-cropped.jpg",
   qrFallback: "请复制微信号后在微信搜索添加",
   wechatId: "L07-929",
   extras: [

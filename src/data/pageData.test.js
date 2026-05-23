@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { pageNavItems, staticPages } from "./pageData.js";
 
-const requiredPages = ["faq", "classroom", "cases"];
+const requiredPages = ["story", "faq", "classroom", "cases"];
 
 describe("static page data", () => {
-  it("exposes only trust-building pages in navigation order", () => {
+  it("exposes crawlable trust-building pages in navigation order", () => {
     assert.deepEqual(
       pageNavItems.map((item) => item.href),
-      requiredPages.map((slug) => `#/${slug}`),
+      requiredPages.map((slug) => `/${slug}`),
     );
   });
 
@@ -27,7 +27,7 @@ describe("static page data", () => {
   it("does not expose duplicate booking or post-sale feedback pages", () => {
     assert.equal(staticPages.booking, undefined);
     assert.equal(staticPages.feedback, undefined);
-    assert.equal(pageNavItems.some((item) => item.href === "#/booking"), false);
-    assert.equal(pageNavItems.some((item) => item.href === "#/feedback"), false);
+    assert.equal(pageNavItems.some((item) => item.href.includes("booking")), false);
+    assert.equal(pageNavItems.some((item) => item.href.includes("feedback")), false);
   });
 });

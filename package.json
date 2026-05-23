@@ -7,19 +7,21 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node --test src/**/*.test.js"
+    "test": "node --test src/**/*.test.js",
+    "sitemap": "node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
-    "vite": "^7.2.4",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.562.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "framer-motion": "^12.23.24",
-    "lucide-react": "^0.562.0"
+    "resend": "^6.12.3",
+    "vite": "^7.2.4"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.18",
+    "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",
-    "autoprefixer": "^10.4.22"
+    "tailwindcss": "^3.4.18"
   }
 }

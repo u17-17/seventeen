@@ -15,9 +15,12 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_auto]">
           {/* 品牌 */}
           <div>
-            <button
-              type="button"
-              onClick={() => navigateToHref("#hero")}
+            <a
+              href="#hero"
+              onClick={(event) => {
+                event.preventDefault();
+                navigateToHref("#hero");
+              }}
               className="group inline-flex min-h-11 items-center gap-3"
             >
               <span className="grid h-10 w-10 place-items-center rounded-full bg-accent text-sm font-black text-brand-deep transition-transform duration-300 group-hover:rotate-45">
@@ -26,7 +29,7 @@ export default function Footer() {
               <span className="text-lg font-black tracking-[0.16em] text-cream">
                 {footer.brand}
               </span>
-            </button>
+            </a>
             <p className="mt-5 max-w-md text-base font-semibold text-cream/80">
               {footer.subtitle}
             </p>
@@ -44,13 +47,16 @@ export default function Footer() {
               <ul className="space-y-2">
                 {primary.map((item) => (
                   <li key={item.href}>
-                    <button
-                      type="button"
-                      onClick={() => navigateToHref(item.href)}
+                    <a
+                      href={item.href}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        navigateToHref(item.href);
+                      }}
                       className="text-sm font-medium text-cream/70 transition-colors hover:text-accent"
                     >
                       {item.label}
-                    </button>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -62,13 +68,16 @@ export default function Footer() {
               <ul className="space-y-2">
                 {pageNavItems.map((item) => (
                   <li key={item.href}>
-                    <button
-                      type="button"
-                      onClick={() => navigateToHref(item.href)}
+                    <a
+                      href={item.href}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        navigateToHref(item.href);
+                      }}
                       className="text-sm font-medium text-cream/70 transition-colors hover:text-accent"
                     >
                       {item.label}
-                    </button>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -80,14 +89,17 @@ export default function Footer() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-accent/80">
               下一步
             </p>
-            <button
-              type="button"
-              onClick={() => navigateToHref("#contact")}
+            <a
+              href="#contact"
+              onClick={(event) => {
+                event.preventDefault();
+                navigateToHref("#contact");
+              }}
               className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-brand-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-soft"
             >
               预约学习诊断
               <ArrowUpRight size={16} />
-            </button>
+            </a>
           </div>
         </div>
 
