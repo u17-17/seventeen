@@ -374,7 +374,7 @@ export default function ConsultationForm({ variant = "standalone", className = "
               学习诊断表
             </h2>
             <p className="mt-5 text-base leading-7 text-neutral-600">
-              先把学生情况整理清楚，再复制成微信消息发送给我。
+              先填好学生情况，提交后我会直接通过微信联系你。
             </p>
             <div className="mt-8 grid gap-3">
               {preparationItems.map((item, index) => (
