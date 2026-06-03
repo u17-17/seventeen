@@ -182,7 +182,7 @@ export const contact = {
     "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。提交后我会直接通过微信联系你。",
   qrPath: "/wechat-qr-cropped.jpg",
   qrFallback: "请复制微信号后在微信搜索添加",
-  wechatId: "L07-929",
+  wechatId: "L09-29",
   extras: [
     { label: "周六日全天可约", icon: CalendarDays },
     { label: "平时晚上可沟通", icon: Clock3 },

@@ -103,7 +103,7 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
-      <Footer />
+      <Footer showPageCta={Boolean(page)} />
     </div>
   );
 }
