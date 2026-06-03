@@ -37,7 +37,7 @@ describe("consultation message generation", () => {
   it("uses placeholders for optional empty score fields", () => {
     const message = buildConsultationMessage({
       guardianName: "李女士",
-      contact: "L07-929",
+      contact: "L09-29",
       grade: "高二",
       subject: "物理",
       mainConcern: "模型题容易乱，想先做一次问题诊断。",

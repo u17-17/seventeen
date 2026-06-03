@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, ImageIcon } from "lucide-react";
-import { contact, fadeUp, staggerContainer } from "../data/siteData.js";
+import { ArrowLeft, ImageIcon } from "lucide-react";
+import { fadeUp, staggerContainer } from "../data/siteData.js";
 import { navigateToHref } from "../utils/scroll.js";
 
 function PageIntro({ page }) {
@@ -295,6 +295,102 @@ function ChecklistSection({ section }) {
   );
 }
 
+function DeepCaseSection({ section }) {
+  return (
+    <section className="bg-white py-20 sm:py-24">
+      <div className="section-shell">
+        <SectionHeading title={section.title} />
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.08 }}
+          className="grid gap-8"
+        >
+          {section.items.map((item, index) => (
+            <motion.article
+              key={item.title}
+              variants={fadeUp}
+              className="overflow-hidden rounded-3xl border border-brand/10 bg-white shadow-card"
+            >
+              <div className="grid xl:grid-cols-[0.88fr_1.12fr]">
+                <div className="p-6 sm:p-8 lg:p-10">
+                  <div className="mb-6 flex flex-wrap items-center gap-3">
+                    <span className="rounded-full bg-brand px-4 py-1.5 text-xs font-bold text-accent">
+                      {item.subject}
+                    </span>
+                    <span className="rounded-full border border-brand/15 bg-cream/70 px-4 py-1.5 text-xs font-semibold text-brand">
+                      {item.focus}
+                    </span>
+                  </div>
+
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-deep">
+                    Case 0{index + 1}
+                  </p>
+                  <h3 className="mt-4 text-2xl font-black leading-tight text-brand-deep sm:text-4xl">
+                    {item.title}
+                  </h3>
+
+                  <div className="mt-8 grid gap-5">
+                    {[
+                      ["核心问题", item.problem],
+                      ["教学重点", item.method],
+                      ["学生收获", item.result],
+                    ].map(([label, value]) => (
+                      <div key={label}>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-deep">
+                          {label}
+                        </p>
+                        <p className="mt-2 text-base leading-7 text-neutral-600">
+                          {value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <ol className="mt-8 grid gap-3">
+                    {item.highlights.map((highlight, highlightIndex) => (
+                      <li
+                        key={highlight}
+                        className="flex gap-3 text-sm font-semibold leading-6 text-brand-deep"
+                      >
+                        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent/20 text-xs font-black text-brand-deep">
+                          {highlightIndex + 1}
+                        </span>
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="border-t border-brand/10 bg-cream/50 p-4 sm:p-5 lg:p-6 xl:border-l xl:border-t-0">
+                  <div className="grid gap-5">
+                    {item.images.map((image) => (
+                      <figure key={image.src}>
+                        <div className="overflow-hidden rounded-2xl border border-brand/10 bg-white">
+                          <img
+                            src={image.src}
+                            alt={image.alt}
+                            loading="lazy"
+                            className="aspect-[1672/941] w-full object-contain"
+                          />
+                        </div>
+                        <figcaption className="mt-3 text-sm font-semibold leading-6 text-brand-deep/70">
+                          {image.caption}
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.article>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function CaseSection({ section }) {
   return (
     <section className="bg-white py-20 sm:py-24">
@@ -362,6 +458,7 @@ function renderSection(section) {
   const firstItem = section.items[0] ?? {};
 
   if ("question" in firstItem) return <FaqSection key={section.title} section={section} />;
+  if ("images" in firstItem) return <DeepCaseSection key={section.title} section={section} />;
   if ("problem" in firstItem) return <CaseSection key={section.title} section={section} />;
   if ("label" in firstItem) return <TimelineSection key={section.title} section={section} />;
   if (section.items.length >= 4) return <ChecklistSection key={section.title} section={section} />;
@@ -369,51 +466,11 @@ function renderSection(section) {
   return <IconGridSection key={section.title} section={section} />;
 }
 
-function PageCta() {
-  return (
-    <section className="relative overflow-hidden bg-brand-deep py-16 text-cream sm:py-20">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_28%,rgba(196,151,82,0.18),transparent_45%),radial-gradient(circle_at_82%_72%,rgba(231,237,233,0.06),transparent_45%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(231,237,233,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(231,237,233,0.04)_1px,transparent_1px)] [background-size:48px_48px]" />
-
-      <div className="section-shell relative">
-        <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent">
-              Next Step
-            </p>
-            <h2 className="mt-4 text-3xl font-black leading-tight sm:text-5xl">
-              想先聊聊学生情况？
-            </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-cream/70 sm:text-lg">
-              可以先准备年级、科目、当前分数和主要问题，再预约一次学习诊断。
-            </p>
-          </div>
-          <a
-            href="#contact"
-            onClick={(event) => {
-              event.preventDefault();
-              navigateToHref("#contact");
-            }}
-            className="inline-flex w-fit items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-base font-bold text-brand-deep transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-soft"
-          >
-            去首页预约
-            <ArrowUpRight size={18} />
-          </a>
-        </div>
-        <p className="mt-8 text-sm font-semibold text-cream/55">
-          微信号：{contact.wechatId}
-        </p>
-      </div>
-    </section>
-  );
-}
-
 export default function StaticPage({ page }) {
   return (
     <>
       <PageIntro page={page} />
       {page.sections.map(renderSection)}
-      <PageCta />
     </>
   );
 }
