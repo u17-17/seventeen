@@ -11,6 +11,7 @@
     "sitemap": "node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vitejs/plugin-react": "^5.1.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.562.0",
