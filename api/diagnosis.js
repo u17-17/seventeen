@@ -133,6 +133,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error("diagnosis api error:", error);
-    return res.status(500).json({ error: "提交失败，请直接添加微信 L07-929。" });
+    return res.status(500).json({ error: "提交失败，请直接添加微信 -L09-29。" });
   }
 }
