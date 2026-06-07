@@ -288,7 +288,7 @@ export default function HeroDissolve() {
                 Hello, I&apos;m Yan.
               </h1>
               <p className="mt-7 text-base font-medium text-[#d9c8ad]/75 sm:text-xl">
-                Math / Physics / 20岁 / 河北邯郸
+                Math / Physics / 22岁 / 河北邯郸
               </p>
             </div>
           </div>

@@ -54,9 +54,12 @@ export default function Navbar() {
       }`}
     >
       <nav className="section-shell flex h-16 items-center justify-between sm:h-[72px]">
-        <button
-          type="button"
-          onClick={() => handleClick("#hero")}
+        <a
+          href="#hero"
+          onClick={(event) => {
+            event.preventDefault();
+            handleClick("#hero");
+          }}
           className="group flex min-h-11 items-center gap-3 text-left"
           aria-label="回到首页"
         >
@@ -66,29 +69,35 @@ export default function Navbar() {
           <span className="text-sm font-black tracking-[0.16em] text-brand-deep">
             YAN TUTOR
           </span>
-        </button>
+        </a>
 
         <div className="hidden items-center gap-0.5 rounded-full border border-brand/10 bg-white/70 p-1 lg:flex">
           {desktopItems.map((item) => (
-            <button
+            <a
               key={item.href}
-              type="button"
-              onClick={() => handleClick(item.href)}
+              href={item.href}
+              onClick={(event) => {
+                event.preventDefault();
+                handleClick(item.href);
+              }}
               className="min-h-10 rounded-full px-4 py-2 text-sm font-semibold text-neutral-600 transition-colors hover:bg-brand hover:text-cream"
             >
               {item.label}
-            </button>
+            </a>
           ))}
         </div>
 
         <div className="hidden items-center lg:flex">
-          <button
-            type="button"
-            onClick={() => handleClick("#contact")}
+          <a
+            href="#contact"
+            onClick={(event) => {
+              event.preventDefault();
+              handleClick("#contact");
+            }}
             className="btn-brand"
           >
             预约诊断
-          </button>
+          </a>
         </div>
 
         <button
@@ -114,33 +123,42 @@ export default function Navbar() {
           >
             <div className="grid gap-1.5">
               {homeNavItems.map((item) => (
-                <button
+                <a
                   key={item.href}
-                  type="button"
-                  onClick={() => handleClick(item.href)}
+                  href={item.href}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleClick(item.href);
+                  }}
                   className="rounded-2xl px-4 py-3 text-left text-base font-semibold text-neutral-700 hover:bg-cream"
                 >
                   {item.label}
-                </button>
+                </a>
               ))}
               <div className="my-2 h-px bg-neutral-100" />
               {pageNavItems.map((item) => (
-                <button
+                <a
                   key={item.href}
-                  type="button"
-                  onClick={() => handleClick(item.href)}
+                  href={item.href}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleClick(item.href);
+                  }}
                   className="rounded-2xl px-4 py-3 text-left text-base font-semibold text-neutral-700 hover:bg-cream"
                 >
                   {item.label}
-                </button>
+                </a>
               ))}
-              <button
-                type="button"
-                onClick={() => handleClick("#contact")}
+              <a
+                href="#contact"
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleClick("#contact");
+                }}
                 className="mt-2 rounded-2xl bg-brand px-4 py-3 text-left text-base font-semibold text-cream hover:bg-brand-deep"
               >
                 预约诊断
-              </button>
+              </a>
             </div>
           </motion.div>
         )}

@@ -5,3 +5,7 @@ dist.zip
 .DS_Store
 .agents/
 skills-lock.json
+.env
+.env.local
+.env.development
+.env.production

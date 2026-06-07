@@ -179,10 +179,10 @@ export const contact = {
   infoTitle: "填写表单时可以参考：",
   infoItems: ["学生年级", "补习科目", "当前分数", "目标分数", "主要问题", "可上课时间"],
   description:
-    "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。你可以先生成咨询信息，再复制到微信发送。",
-  qrPath: "/wechat-qr.jpg",
+    "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。提交后我会直接通过微信联系你。",
+  qrPath: "/wechat-qr-cropped.jpg",
   qrFallback: "请复制微信号后在微信搜索添加",
-  wechatId: "L07-929",
+  wechatId: "-L09-29",
   extras: [
     { label: "周六日全天可约", icon: CalendarDays },
     { label: "平时晚上可沟通", icon: Clock3 },

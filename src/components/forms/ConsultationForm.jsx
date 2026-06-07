@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarCheck, Copy, Send } from "lucide-react";
+import { CalendarCheck, Copy, Loader2, Send } from "lucide-react";
 import {
   buildConsultationMessage,
   copyTextWithFallback,
@@ -45,9 +45,10 @@ const preparationItems = [
 export default function ConsultationForm({ variant = "standalone", className = "" }) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState(null);
+  const [apiStatus, setApiStatus] = useState(null);
   const [generatedMessage, setGeneratedMessage] = useState("");
   const [copyStatus, setCopyStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const embedded = variant === "embedded";
 
   const updateField = (event) => {
@@ -59,31 +60,74 @@ export default function ConsultationForm({ variant = "standalone", className = "
       delete next[name];
       return next;
     });
-    setStatus(null);
+    setApiStatus(null);
     setGeneratedMessage("");
     setCopyStatus("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (submitting) return;
+
     const result = validateConsultationForm(values);
     setErrors(result.errors);
 
     if (!result.valid) {
-      setStatus({ type: "error", message: "请先补全标红的信息，再生成咨询信息。" });
+      setApiStatus({
+        type: "error",
+        message: "请先补全标红的信息，再生成咨询信息。",
+      });
       setGeneratedMessage("");
-      setCopyStatus("");
       return;
     }
 
     const message = buildConsultationMessage(values);
     setGeneratedMessage(message);
+
+    setSubmitting(true);
+    setApiStatus(null);
     setCopyStatus("");
-    setStatus({
-      type: "success",
-      message:
-        "已整理好咨询信息。你可以复制下面内容，通过微信发给我，我会根据学生情况判断适合的补习方向。",
-    });
+
+    try {
+      const response = await fetch("/api/diagnosis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          guardianName: values.guardianName,
+          contact: values.contact,
+          grade: values.grade,
+          subject: values.subject,
+          currentScore: values.currentScore,
+          targetScore: values.targetScore,
+          problem: values.mainConcern,
+          availableTime: values.availability,
+          source:
+            typeof window !== "undefined" ? window.location.pathname : "",
+          website: "",
+        }),
+      });
+
+      if (response.ok) {
+        setApiStatus({
+          type: "success",
+          message:
+            "已收到诊断信息，我会尽快通过微信联系你。你也可以复制下方微信号主动添加。",
+        });
+      } else {
+        setApiStatus({
+          type: "error",
+          message: "提交失败，请直接添加微信 -L09-29。",
+        });
+      }
+    } catch {
+      setApiStatus({
+        type: "error",
+        message: "提交失败，请直接添加微信 -L09-29。",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleCopyMessage = async () => {
@@ -107,10 +151,23 @@ export default function ConsultationForm({ variant = "standalone", className = "
             填写学生情况
           </h3>
           <p className="mt-3 text-sm leading-7 text-neutral-500">
-            表单不会提交到服务器，只会帮你生成一段可复制的微信咨询内容。
+            提交后我将收到诊断信息，会尽快通过微信联系你。
           </p>
         </div>
       )}
+
+      {/* Honeypot – hidden from users, traps bots */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField label="家长称呼" name="guardianName" error={errors.guardianName}>
@@ -259,9 +316,9 @@ export default function ConsultationForm({ variant = "standalone", className = "
       </div>
 
       <div className="mt-7 grid gap-4">
-        <FormStatus status={status} />
+        <FormStatus status={apiStatus} />
 
-        {generatedMessage && (
+        {generatedMessage && !submitting && (
           <div className="rounded-2xl border border-brand/12 bg-cream/60 p-4">
             <pre className="whitespace-pre-wrap break-words font-sans text-sm font-semibold leading-7 text-brand-deep">
               {generatedMessage}
@@ -284,10 +341,20 @@ export default function ConsultationForm({ variant = "standalone", className = "
 
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-3.5 text-base font-semibold text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-deep hover:shadow-brand"
+          disabled={submitting}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-3.5 text-base font-semibold text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-deep hover:shadow-brand disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:bg-brand disabled:hover:shadow-none"
         >
-          {generatedMessage ? "更新咨询信息" : "生成咨询信息"}
-          <Send size={18} />
+          {submitting ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              正在提交...
+            </>
+          ) : (
+            <>
+              {generatedMessage ? "更新咨询信息" : "生成咨询信息"}
+              <Send size={18} />
+            </>
+          )}
         </button>
       </div>
     </form>
@@ -307,7 +374,7 @@ export default function ConsultationForm({ variant = "standalone", className = "
               学习诊断表
             </h2>
             <p className="mt-5 text-base leading-7 text-neutral-600">
-              先把学生情况整理清楚，再复制成微信消息发送给我。
+              先填好学生情况，提交后我会直接通过微信联系你。
             </p>
             <div className="mt-8 grid gap-3">
               {preparationItems.map((item, index) => (
