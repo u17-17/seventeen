@@ -1,9 +1,9 @@
 import { entityProfile, getCompactSubjectLabel } from "../data/entityProfile.js";
 
 const siteName = entityProfile.auxiliaryBrand;
-const defaultTitle = `${siteName}｜${getCompactSubjectLabel()}一对一学习诊断`;
-const defaultDescription =
-  `${entityProfile.teacher.shortName}${getCompactSubjectLabel()}一对一辅导，专注学习问题诊断、题型识别、过程拆解和错因复盘。`;
+const defaultTitle = entityProfile.search.title;
+const defaultDescription = entityProfile.search.description;
+const defaultKeywords = entityProfile.search.keywords;
 const defaultImage = "/og-image.svg";
 
 function normalizeOrigin(origin) {
@@ -18,12 +18,14 @@ function absoluteUrl(path, origin) {
 
 export function getSeoForPage(page, origin = globalThis.location?.origin) {
   const path = page?.slug ? `/${page.slug}` : "/";
-  const title = page ? `${page.title}｜${siteName}` : defaultTitle;
-  const description = page?.subtitle || defaultDescription;
+  const title = page?.seoTitle || (page ? `${page.title}｜${siteName}` : defaultTitle);
+  const description = page?.seoDescription || page?.subtitle || defaultDescription;
+  const keywords = page?.seoKeywords || defaultKeywords;
 
   return {
     title,
     description,
+    keywords,
     canonicalUrl: absoluteUrl(path, origin),
     ogImage: absoluteUrl(defaultImage, origin),
   };
@@ -112,6 +114,12 @@ export function applySeo(page, notFound = false) {
 
   document.title = seo.title;
   setMeta('meta[name="description"]', { name: "description", content: seo.description });
+  if (seo.keywords?.length) {
+    setMeta('meta[name="keywords"]', {
+      name: "keywords",
+      content: seo.keywords.join(","),
+    });
+  }
   setMeta('meta[name="robots"]', {
     name: "robots",
     content: seo.robots ?? "index,follow",
@@ -119,6 +127,7 @@ export function applySeo(page, notFound = false) {
 
   if (notFound) {
     removeFromHead('link[rel="canonical"]');
+    removeFromHead('meta[name="keywords"]');
     document.head.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"]').forEach(
       (element) => element.remove(),
     );

@@ -2,6 +2,19 @@ export const entityProfile = Object.freeze({
   canonicalName: "邯郸闫老师高中数学物理家教",
   auxiliaryBrand: "YAN TUTOR",
   entityType: "个人教师品牌 / 高中一对一家教服务",
+  search: Object.freeze({
+    localName: "邯郸市闫老师",
+    title: "邯郸市闫老师高中数学物理家教｜涉县线下/邯郸线上一对一辅导",
+    description:
+      "邯郸市闫老师提供高一高二高中数学、物理一对一学习诊断与辅导，涉县线下沟通，邯郸市全地区线上辅导，重点做题型拆解、过程梳理和错因复盘。",
+    keywords: Object.freeze([
+      "邯郸市闫老师",
+      "涉县闫老师",
+      "邯郸高中数学家教",
+      "涉县高中物理家教",
+      "高中数学物理一对一",
+    ]),
+  }),
   teacher: Object.freeze({
     name: "闫老师",
     shortName: "闫老师",

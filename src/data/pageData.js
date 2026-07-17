@@ -45,15 +45,19 @@ export const notFoundPage = Object.freeze({
 export const staticPages = {
   tutor: {
     slug: "tutor",
+    seoTitle: entityProfile.search.title,
+    seoDescription: entityProfile.search.description,
+    seoKeywords: entityProfile.search.keywords,
     eyebrow: "Tutor Entity",
     title: entityProfile.canonicalName,
-    subtitle: `${entityProfile.teacher.name}提供${getCompactSubjectLabel()}一对一学习诊断与辅导，主要服务${getFormalGradeLabel()}学生：${entityProfile.services.offlineArea}可线下沟通，同时接受${entityProfile.services.onlineArea}线上辅导。`,
+    subtitle: `${entityProfile.search.localName}提供${getCompactSubjectLabel()}一对一学习诊断与辅导，主要服务${getFormalGradeLabel()}学生：${entityProfile.services.offlineArea}可线下沟通，同时接受${entityProfile.services.onlineArea}线上辅导。`,
     icon: UserRound,
     intro: {
-      title: "把老师、科目、地区和联系方式放在同一个稳定页面",
+      title: `把${entityProfile.search.localName}、科目、地区和联系方式放在同一个稳定页面`,
       body:
         "这一页是家教服务的规范入口，集中说明闫老师是谁、主要辅导什么学生、在哪些地区服务，以及如何先做一次学习问题诊断。",
       points: [
+        entityProfile.search.localName,
         entityProfile.teacher.name,
         getCompactSubjectLabel(),
         getServiceModeLabel(),

@@ -9,9 +9,27 @@ describe("seo helpers", () => {
   it("builds home metadata with an absolute canonical url", () => {
     const seo = getSeoForPage(null, "https://example.com");
 
-    assert.equal(seo.title, "YAN TUTOR｜高中数学 / 物理一对一学习诊断");
+    assert.equal(seo.title, entityProfile.search.title);
     assert.equal(seo.canonicalUrl, "https://example.com/");
     assert.equal(seo.ogImage, "https://example.com/og-image.svg");
+    assert.match(seo.description, /邯郸市闫老师/);
+    assert.match(seo.description, /涉县线下/);
+    assert.match(seo.description, /邯郸市全地区线上/);
+    assert.ok(seo.keywords.includes("邯郸市闫老师"));
+    assert.equal(seo.title.includes("闫奕龙"), false);
+    assert.equal(seo.description.includes("闫奕龙"), false);
+  });
+
+  it("uses a local-search tutor title without exposing the private real name", () => {
+    const seo = getSeoForPage(staticPages.tutor, "https://example.com");
+
+    assert.equal(seo.title, entityProfile.search.title);
+    assert.equal(seo.canonicalUrl, "https://example.com/tutor");
+    assert.ok(seo.keywords.includes("涉县闫老师"));
+    assert.match(seo.description, /题型拆解/);
+    assert.equal(seo.title.includes("闫奕龙"), false);
+    assert.equal(seo.description.includes("闫奕龙"), false);
+    assert.equal(seo.keywords.some((keyword) => keyword.includes("闫奕龙")), false);
   });
 
   it("builds page metadata from static page copy", () => {
@@ -56,6 +74,7 @@ describe("seo helpers", () => {
     const criticalFacts = [
       entityProfile.canonicalName,
       entityProfile.teacher.name,
+      entityProfile.search.localName,
       entityProfile.website.origin,
       entityProfile.contact.wechatId,
       entityProfile.services.offlineArea,

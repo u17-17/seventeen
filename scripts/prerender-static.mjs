@@ -42,6 +42,7 @@ function stripExistingSeo(html) {
 function renderHeadSeo(seo, structuredData) {
   const title = escapeHtml(seo.title);
   const description = escapeHtml(seo.description);
+  const keywords = escapeHtml((seo.keywords ?? []).join(","));
   const canonicalUrl = escapeHtml(seo.canonicalUrl);
   const ogImage = escapeHtml(seo.ogImage);
   const imageAlt = escapeHtml(`${entityProfile.canonicalName}分享图`);
@@ -49,6 +50,7 @@ function renderHeadSeo(seo, structuredData) {
   return [
     `    <title>${title}</title>`,
     `    <meta name="description" content="${description}" />`,
+    keywords && `    <meta name="keywords" content="${keywords}" />`,
     `    <meta name="robots" content="index,follow" />`,
     `    <link rel="canonical" href="${canonicalUrl}" />`,
     `    <meta property="og:type" content="website" />`,
@@ -65,7 +67,7 @@ function renderHeadSeo(seo, structuredData) {
     `    <meta name="twitter:image" content="${ogImage}" />`,
     `    <meta name="twitter:image:alt" content="${imageAlt}" />`,
     `    <script type="application/ld+json" data-seo="structured-data">${jsonForHtml(structuredData)}</script>`,
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 }
 
 function renderNotFoundHead() {
@@ -94,6 +96,7 @@ function renderArticle(title, parts, item = {}) {
 function renderHomeRoute() {
   const factItems = [
     `规范实体名：${entityProfile.canonicalName}`,
+    `本地搜索名：${entityProfile.search.localName}`,
     `教师称呼：${entityProfile.teacher.name}`,
     `学校与专业：${entityProfile.teacher.school} · ${entityProfile.teacher.major}`,
     `服务科目：${entityProfile.services.subjects.join("、")}`,
@@ -177,6 +180,7 @@ function renderPageRoute(page) {
       <p>${escapeHtml(page.intro.body)}</p>
       ${renderList([
         entityProfile.canonicalName,
+        entityProfile.search.localName,
         entityProfile.teacher.name,
         entityProfile.services.offlineArea,
         entityProfile.services.onlineArea,

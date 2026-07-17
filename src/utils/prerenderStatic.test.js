@@ -61,7 +61,9 @@ describe("static route prerendering", () => {
     const html = renderStaticRouteHtml(template, getStaticRoutes()[0], entityProfile.website.origin);
 
     assert.equal(countMatches(html, /<h1\b/gi), 1);
-    assert.match(html, /<title>YAN TUTOR｜高中数学 \/ 物理一对一学习诊断<\/title>/);
+    assert.match(html, /<title>邯郸市闫老师高中数学物理家教｜涉县线下\/邯郸线上一对一辅导<\/title>/);
+    assert.match(html, /<meta name="description" content="邯郸市闫老师提供高一高二高中数学、物理一对一学习诊断与辅导，涉县线下沟通，邯郸市全地区线上辅导，重点做题型拆解、过程梳理和错因复盘。" \/>/);
+    assert.match(html, /<meta name="keywords" content="邯郸市闫老师,涉县闫老师,邯郸高中数学家教,涉县高中物理家教,高中数学物理一对一" \/>/);
     assert.match(html, /<link rel="canonical" href="https:\/\/seventeen-yan\.cn\/" \/>/);
     assert.match(html, /<script type="application\/ld\+json" data-seo="structured-data">/);
     assert.match(html, /邯郸闫老师高中数学物理家教/);
@@ -111,8 +113,10 @@ describe("static route prerendering", () => {
 
     assert.equal(countMatches(html, /<h1\b/gi), 1);
     assert.match(html, /<h1>邯郸闫老师高中数学物理家教<\/h1>/);
-    assert.match(html, /<title>邯郸闫老师高中数学物理家教｜YAN TUTOR<\/title>/);
+    assert.match(html, /<title>邯郸市闫老师高中数学物理家教｜涉县线下\/邯郸线上一对一辅导<\/title>/);
     assert.match(html, /<link rel="canonical" href="https:\/\/seventeen-yan\.cn\/tutor" \/>/);
+    assert.match(html, /邯郸市闫老师/);
+    assert.match(html, /<meta name="keywords" content="邯郸市闫老师,涉县闫老师,邯郸高中数学家教,涉县高中物理家教,高中数学物理一对一" \/>/);
     assert.match(html, /闫老师/);
     assert.doesNotMatch(html, /闫奕龙/);
     assert.match(html, /河北师范大学/);
