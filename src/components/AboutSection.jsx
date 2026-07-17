@@ -1,14 +1,9 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { User } from "lucide-react";
+import { MapPin } from "lucide-react";
 import SectionTitle from "./SectionTitle.jsx";
 import { about, fadeUp, staggerContainer } from "../data/siteData.js";
 
-const AVATAR_SRC = "/teacher-avatar.jpg";
-
 export default function AboutSection() {
-  const [avatarLoaded, setAvatarLoaded] = useState(true);
-
   return (
     <section
       id="about"
@@ -28,31 +23,20 @@ export default function AboutSection() {
             viewport={{ once: true, amount: 0.3 }}
             className="mt-10 flex flex-col items-start gap-5"
           >
-            <div className="relative">
+            <div className="relative" aria-hidden="true">
               <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-accent/30 via-transparent to-brand/20 blur-md" />
-              <div className="relative grid h-44 w-44 place-items-center overflow-hidden rounded-full border-[3px] border-accent bg-brand-mist shadow-brand">
-                {avatarLoaded ? (
-                  <img
-                    src={AVATAR_SRC}
-                    alt="闫老师"
-                    onError={() => setAvatarLoaded(false)}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-brand text-cream">
-                    <User size={36} strokeWidth={1.4} />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-70">
-                      Photo
-                    </span>
-                  </div>
-                )}
+              <div className="relative flex h-44 w-44 flex-col items-center justify-center rounded-full border-[3px] border-accent bg-brand text-cream shadow-brand">
+                <span className="font-serif text-6xl font-black leading-none">闫</span>
+                <span className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-cream/70">
+                  Yan Tutor
+                </span>
               </div>
             </div>
             <div>
-              <p className="text-lg font-bold text-brand-deep">闫老师</p>
-              <p className="mt-1 text-sm text-neutral-500">
-                Math / Physics · 河北邯郸
-              </p>
+              <p className="text-lg font-bold text-brand-deep">{about.teacherName}</p>
+              <p className="mt-1 text-sm leading-6 text-neutral-600">{about.identityLine}</p>
+              <p className="text-sm leading-6 text-neutral-600">{about.ageLabel}</p>
+              <p className="mt-2 text-xs leading-5 text-neutral-500">{about.photoNote}</p>
             </div>
           </motion.div>
         </div>
@@ -81,6 +65,27 @@ export default function AboutSection() {
                 </div>
               ))}
             </div>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              {about.services.map((service) => (
+                <article
+                  key={service.title}
+                  className="border-t border-brand/15 pt-5"
+                >
+                  <h3 className="text-base font-black text-brand-deep">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-neutral-600">
+                    {service.content}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <p className="mt-7 flex items-start gap-2 border-t border-brand/10 pt-5 text-sm font-semibold leading-6 text-brand-deep">
+              <MapPin className="mt-0.5 shrink-0" size={17} aria-hidden="true" />
+              <span>{about.serviceArea}</span>
+            </p>
           </motion.div>
 
           <motion.div

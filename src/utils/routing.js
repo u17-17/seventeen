@@ -1,12 +1,21 @@
-export const pageRouteSlugs = ["story", "faq", "classroom", "cases"];
+export const pageRouteSlugs = ["tutor", "story", "faq", "classroom", "cases"];
 
 function getNormalizedSlug(hash = "") {
   if (!hash.startsWith("#/")) return null;
-  return decodeURIComponent(hash.slice(2).split(/[?#]/)[0].replace(/\/+$/, ""));
+  try {
+    return decodeURIComponent(hash.slice(2).split(/[?#]/)[0].replace(/\/+$/, ""));
+  } catch {
+    return null;
+  }
 }
 
 function getNormalizedPath(pathname = "") {
-  const path = decodeURIComponent(pathname.split(/[?#]/)[0].replace(/\/+$/, ""));
+  let path;
+  try {
+    path = decodeURIComponent(pathname.split(/[?#]/)[0].replace(/\/+$/, ""));
+  } catch {
+    return null;
+  }
   if (!path || path === "/") return null;
   return path.replace(/^\/+/, "");
 }
@@ -39,6 +48,20 @@ export function isPageHash(hash = "") {
 
 export function isPagePath(pathname = "") {
   return getPageRouteFromPath(pathname) !== null;
+}
+
+export function isNotFoundPath(pathname = "") {
+  let normalizedPath;
+  try {
+    normalizedPath = decodeURIComponent(String(pathname).split(/[?#]/)[0]);
+  } catch {
+    return true;
+  }
+
+  const normalized = normalizedPath.replace(/\/+$/, "") || "/";
+  if (normalized === "/") return false;
+
+  return !pageRouteSlugs.includes(normalized.replace(/^\/+/, ""));
 }
 
 export function getLegacyRedirectTarget(hash = "") {

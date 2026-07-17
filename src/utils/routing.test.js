@@ -7,6 +7,7 @@ import {
   getPageRouteFromUrl,
   isPageHash,
   isPagePath,
+  isNotFoundPath,
   toPageHash,
   toPagePath,
 } from "./routing.js";
@@ -14,6 +15,7 @@ import {
 describe("hash page routing", () => {
   it("recognizes static page hashes without treating home anchors as pages", () => {
     assert.equal(getPageRouteFromHash("#/story"), "story");
+    assert.equal(getPageRouteFromHash("#/tutor"), "tutor");
     assert.equal(getPageRouteFromHash("#/faq"), "faq");
     assert.equal(getPageRouteFromHash("#/classroom"), "classroom");
     assert.equal(getPageRouteFromHash("#/cases"), "cases");
@@ -31,6 +33,7 @@ describe("hash page routing", () => {
 
   it("recognizes real paths for crawlable static pages", () => {
     assert.equal(getPageRouteFromPath("/story"), "story");
+    assert.equal(getPageRouteFromPath("/tutor"), "tutor");
     assert.equal(getPageRouteFromPath("/story/"), "story");
     assert.equal(getPageRouteFromPath("/faq"), "faq");
     assert.equal(getPageRouteFromPath("/classroom"), "classroom");
@@ -41,6 +44,7 @@ describe("hash page routing", () => {
 
   it("prefers real paths while preserving legacy hash routes", () => {
     assert.equal(getPageRouteFromUrl("/story", ""), "story");
+    assert.equal(getPageRouteFromUrl("/tutor", ""), "tutor");
     assert.equal(getPageRouteFromUrl("/", "#/faq"), "faq");
     assert.equal(getPageRouteFromUrl("/cases", "#contact"), "cases");
     assert.equal(getPageRouteFromUrl("/", "#contact"), null);
@@ -48,6 +52,7 @@ describe("hash page routing", () => {
 
   it("creates crawlable path links for static pages", () => {
     assert.equal(toPagePath("story"), "/story");
+    assert.equal(toPagePath("tutor"), "/tutor");
     assert.equal(toPagePath("cases"), "/cases");
   });
 
@@ -58,8 +63,24 @@ describe("hash page routing", () => {
 
   it("flags only page paths as page routes", () => {
     assert.equal(isPagePath("/story"), true);
+    assert.equal(isPagePath("/tutor"), true);
     assert.equal(isPagePath("/booking"), false);
     assert.equal(isPagePath("/"), false);
+  });
+
+  it("treats only unknown request paths as not found", () => {
+    assert.equal(isNotFoundPath("/"), false);
+    assert.equal(isNotFoundPath("/tutor"), false);
+    assert.equal(isNotFoundPath("/story/"), false);
+    assert.equal(isNotFoundPath("/unknown-page"), true);
+    assert.equal(isNotFoundPath("/missing-image.png"), true);
+    assert.equal(isNotFoundPath("/%E0%A4%A"), true);
+  });
+
+  it("fails closed instead of throwing on malformed encoded routes", () => {
+    assert.equal(getPageRouteFromPath("/%E0%A4%A"), null);
+    assert.equal(getPageRouteFromHash("#/%E0%A4%A"), null);
+    assert.equal(getPageRouteFromUrl("/%E0%A4%A", ""), null);
   });
 
   it("redirects the old booking link to the homepage contact section", () => {

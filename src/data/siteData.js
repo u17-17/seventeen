@@ -15,6 +15,16 @@ import {
   Star,
   Target,
 } from "lucide-react";
+import {
+  entityProfile,
+  getCompactSubjectLabel,
+  getFormalGradeLabel,
+  getServiceModeLabel,
+} from "./entityProfile.js";
+import { authorizedReviews, verifiedCases } from "./contentData.js";
+
+const subjectLabel = getCompactSubjectLabel();
+const gradeLabel = getFormalGradeLabel();
 
 export const navItems = [
   { label: "关于", href: "#about" },
@@ -25,11 +35,15 @@ export const navItems = [
 ];
 
 export const hero = {
+  brand: entityProfile.auxiliaryBrand,
   englishTitle: "HELLO, I'M YAN",
-  chineseTitle: "你好，我是闫老师",
-  subtitle: "高中数学 / 物理一对一辅导",
+  chineseTitle: `你好，我是${entityProfile.teacher.shortName}`,
+  subtitle: `${subjectLabel}一对一辅导`,
+  identityLine: `${entityProfile.teacher.name} · ${entityProfile.teacher.displayAge}`,
+  serviceSummary: `正式面向${entityProfile.services.formalGrades.join("、")}学生，提供${entityProfile.services.subjects.join("、")}辅导。`,
+  areaSummary: `${entityProfile.services.offlineArea}线下 · ${entityProfile.services.onlineArea}线上`,
   description:
-    "面向高一高二学生，专注解决“听得懂但做不出”“分数不稳定”“模型题思路混乱”等问题。",
+    `面向${gradeLabel}学生，专注解决“听得懂但做不出”“分数不稳定”“模型题思路混乱”等问题。`,
   primaryCta: "预约学习诊断",
   secondaryCta: "了解教学方法",
   scrollHint: "向下滚动，了解我的教学方式",
@@ -38,13 +52,31 @@ export const hero = {
 export const about = {
   title: "关于我",
   eyebrow: "About Yan",
+  teacherName: entityProfile.teacher.name,
+  identityLine: `${entityProfile.teacher.school} · ${entityProfile.teacher.major}`,
+  ageLabel: `当前展示年龄：${entityProfile.teacher.displayAge}`,
+  photoNote: `采用文字身份卡展示，${entityProfile.teacher.photoPolicy}。`,
   body:
-    "我是一名长期做高中数学、物理一对一辅导的年轻老师。相比单纯讲答案，我更重视帮学生建立题型识别、过程拆解和错因复盘能力。",
-  highlights: ["年轻，但认真负责。", "懂学生，不死板。", "方法清晰，讲题有结构。"],
+    `提供高中数学、物理一对一辅导时，${entityProfile.teacher.shortName}更重视题型识别、过程拆解和错因复盘。`,
+  highlights: ["题型识别", "过程拆解", "错因复盘"],
+  services: [
+    {
+      title: entityProfile.services.subjects[0],
+      content:
+        `面向${entityProfile.services.formalGrades.join("、")}学生，从读题、条件整理和第一步选择入手，梳理基础知识、函数等题型与考试错因。`,
+    },
+    {
+      title: entityProfile.services.subjects[1],
+      content:
+        `面向${entityProfile.services.formalGrades.join("、")}学生，围绕受力分析、电学基础和模型识别，拆解综合题的判断与书写过程。`,
+    },
+  ],
+  serviceArea:
+    `${entityProfile.services.offlineArea}线下辅导；${entityProfile.services.onlineArea}线上辅导。`,
   stats: [
-    { label: "高中数学 / 高中物理", icon: BookOpen },
-    { label: "高一 / 高二", icon: Target },
-    { label: "线上线下均可", icon: MapPin },
+    { label: subjectLabel, icon: BookOpen },
+    { label: gradeLabel, icon: Target },
+    { label: getServiceModeLabel(), icon: MapPin },
     { label: "周六日全天可约", icon: CalendarDays },
     { label: "平时晚上可沟通", icon: Clock3 },
   ],
@@ -118,29 +150,21 @@ export const experiences = {
   subtitle:
     "以下为阶段性教学经历，重点展示我对学生问题诊断和过程拆解的经验。",
   items: [
-    {
-      number: "01",
-      title: "高一数学辅导",
-      time: "2026.03 - 2026.06",
-      content:
-        "辅导一名高一女生数学，围绕基础知识、函数题型、考试错因进行系统复盘，阶段测评提升约 20 分。",
-      tags: ["高中数学", "高一", "错因复盘", "题型训练"],
-    },
-    {
-      number: "02",
-      title: "高二物理辅导",
-      time: "2026.03 - 2026.06",
-      content:
-        "辅导一名高二男生物理，围绕受力分析、电学基础、模型题过程拆解进行训练，阶段测评提升约 20 分。",
-      tags: ["高中物理", "高二", "模型分析", "过程拆解"],
-    },
+    ...verifiedCases.map((item, index) => ({
+      number: String(index + 1).padStart(2, "0"),
+      title: item.title,
+      time: item.period,
+      content: item.publicSummary,
+      tags: item.tags,
+      evidenceId: item.evidenceId,
+    })),
     {
       number: "03",
-      title: "初高衔接教学",
+      title: "升高一咨询经历",
       time: "2025.06 - 2025.09",
       content:
         "带过三名高一学生，针对初中到高中学习方式变化进行衔接教学，熟悉高一学生常见适应问题。",
-      tags: ["初高衔接", "高一", "学习方法", "基础过渡"],
+      tags: ["升高一咨询", "高一", "学习方法", "基础过渡"],
     },
   ],
 };
@@ -149,52 +173,40 @@ export const testimonials = {
   title: "学生与家长反馈",
   eyebrow: "Testimonials",
   subtitle: "真实的学习变化，来自学生和家长的评价。",
-  items: [
-    {
-      quote:
-        "以前做函数题总是凭感觉，现在会先拆条件再选方法，准确率提高了很多。",
-      author: "高一学生家长",
-      tag: "高中数学",
-    },
-    {
-      quote:
-        "闫老师讲题很有耐心，不会直接给答案，而是引导我自己想出来。物理大题终于有思路了。",
-      author: "高二学生",
-      tag: "高中物理",
-    },
-    {
-      quote:
-        "孩子从初中到高中不适应，闫老师帮他梳理了学习方法，期中考试进步明显。",
-      author: "高一学生家长",
-      tag: "初高衔接",
-    },
-  ],
+  items: authorizedReviews,
 };
 
 export const contact = {
   title: "预约一次学习问题诊断",
   eyebrow: "Contact",
   subtitle:
-    "先不用急着报课，你可以先把学生的年级、分数、薄弱点发给我，我会判断当前最该补哪一块。",
+    "先不用急着报课，只提交年级、科目、授课偏好和主要学习问题，我会据此做初步判断。",
   infoTitle: "填写表单时可以参考：",
-  infoItems: ["学生年级", "补习科目", "当前分数", "目标分数", "主要问题", "可上课时间"],
+  infoItems: [
+    "学生年级",
+    "咨询科目",
+    "授课偏好",
+    "可选成绩区间",
+    "主要问题",
+    "可沟通时间（可选）",
+  ],
   description:
-    "我会先根据学生情况判断更适合补基础、专题突破，还是试卷复盘。提交后我会直接通过微信联系你。",
-  qrPath: "/wechat-qr-cropped.jpg",
-  qrFallback: "请复制微信号后在微信搜索添加",
-  wechatId: "-L09-29",
+    `提交成功后会按所填联系方式联系；不同意通过表单处理信息或提交失败时，也可以直接复制微信号 ${entityProfile.contact.wechatId} 联系。`,
+  qrPath: entityProfile.contact.qrPath,
+  qrFallback: entityProfile.contact.qrFallback,
+  wechatId: entityProfile.contact.wechatId,
   extras: [
     { label: "周六日全天可约", icon: CalendarDays },
     { label: "平时晚上可沟通", icon: Clock3 },
-    { label: "线上线下均可", icon: Sparkles },
+    { label: getServiceModeLabel(), icon: Sparkles },
   ],
 };
 
 export const footer = {
-  brand: "YAN TUTOR",
-  subtitle: "高中数学 / 高中物理一对一辅导",
+  brand: entityProfile.auxiliaryBrand,
+  subtitle: `${subjectLabel}一对一辅导`,
   slogan: "帮学生把“听得懂”变成“做得出”",
-  copyright: "© 2026 YAN TUTOR. All rights reserved.",
+  copyright: `© 2026 ${entityProfile.auxiliaryBrand}. All rights reserved.`,
   ctaIcon: MoveRight,
 };
 

@@ -11,8 +11,14 @@ import ContactSection from "./components/ContactSection.jsx";
 import Footer from "./components/Footer.jsx";
 import Seo from "./components/Seo.jsx";
 import StaticPage from "./pages/StaticPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 import { staticPages } from "./data/pageData.js";
-import { getLegacyRedirectTarget, getPageRouteFromUrl } from "./utils/routing.js";
+import {
+  getLegacyRedirectTarget,
+  getPageRouteFromUrl,
+  isNotFoundPath,
+} from "./utils/routing.js";
+import { shouldLoadVercelAnalytics } from "./utils/analytics.js";
 import { navigateToHref } from "./utils/scroll.js";
 
 const HeroDissolve = lazy(() => import("./components/HeroDissolve.jsx"));
@@ -49,23 +55,31 @@ const pageTransition = {
 };
 
 export default function App() {
+  const initialNotFound = isNotFoundPath(window.location.pathname);
   const [pageRoute, setPageRoute] = useState(() =>
-    getLegacyRedirectTarget(window.location.hash)
+    !initialNotFound && getLegacyRedirectTarget(window.location.hash)
       ? null
       : getPageRouteFromUrl(window.location.pathname, window.location.hash),
   );
+  const [notFound, setNotFound] = useState(initialNotFound);
   const page = pageRoute ? staticPages[pageRoute] : null;
+  const analyticsEnabled = shouldLoadVercelAnalytics(window.location.hostname);
 
   useEffect(() => {
     const syncRoute = () => {
-      const legacyTarget = getLegacyRedirectTarget(window.location.hash);
+      const nextNotFound = isNotFoundPath(window.location.pathname);
+      const legacyTarget = nextNotFound
+        ? null
+        : getLegacyRedirectTarget(window.location.hash);
       if (legacyTarget) {
         setPageRoute(null);
+        setNotFound(false);
         window.setTimeout(() => navigateToHref(legacyTarget), 0);
         return;
       }
 
       setPageRoute(getPageRouteFromUrl(window.location.pathname, window.location.hash));
+      setNotFound(nextNotFound);
     };
 
     syncRoute();
@@ -78,8 +92,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (pageRoute) window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [pageRoute]);
+    if (pageRoute || notFound) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  }, [notFound, pageRoute]);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-white text-neutral-950 antialiased">
@@ -89,11 +105,15 @@ export default function App() {
       >
         跳到主要内容
       </a>
-      <Seo page={page} />
+      <Seo page={page} notFound={notFound} />
       <Navbar />
       <main id="main-content">
         <AnimatePresence mode="wait" initial={false}>
-          {page ? (
+          {notFound ? (
+            <motion.div key="not-found" {...pageTransition}>
+              <NotFoundPage />
+            </motion.div>
+          ) : page ? (
             <motion.div key={`page-${pageRoute}`} {...pageTransition}>
               <StaticPage page={page} />
             </motion.div>
@@ -105,7 +125,7 @@ export default function App() {
         </AnimatePresence>
       </main>
       <Footer showPageCta={Boolean(page)} />
-      <Analytics />
+      {analyticsEnabled && <Analytics />}
     </div>
   );
 }

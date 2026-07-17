@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender-static.mjs && node scripts/generate-sitemap.mjs dist",
     "preview": "vite preview --host 0.0.0.0",
     "test": "node --test src/**/*.test.js",
-    "sitemap": "node scripts/generate-sitemap.mjs"
+    "sitemap": "node scripts/generate-sitemap.mjs dist"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

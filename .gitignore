@@ -9,3 +9,4 @@ skills-lock.json
 .env.local
 .env.development
 .env.production
+.vercel

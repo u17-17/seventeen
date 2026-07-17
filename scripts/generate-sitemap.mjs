@@ -1,32 +1,73 @@
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { entityProfile } from "../src/data/entityProfile.js";
+import { getSeoForPage } from "../src/utils/seo.js";
+import { getStaticRoutes } from "./prerender-static.mjs";
 
-const pages = ["/", "/story", "/faq", "/classroom", "/cases"];
-const rawSiteUrl = process.env.SITE_URL;
+const scriptPath = fileURLToPath(import.meta.url);
 
-if (!rawSiteUrl) {
-  console.error("Please set SITE_URL before generating sitemap.xml, for example: SITE_URL=https://your-domain.com npm run sitemap");
-  process.exit(1);
+function normalizeOrigin(value) {
+  const url = new URL(String(value || entityProfile.website.origin));
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new Error("SITE_URL must use http or https");
+  }
+  return url.origin;
 }
 
-const siteUrl = rawSiteUrl.replace(/\/+$/, "");
-const today = new Date().toISOString().slice(0, 10);
+function escapeXml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
 
-const urls = pages
-  .map(
-    (path) => `  <url>
-    <loc>${siteUrl}${path}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${path === "/" ? "weekly" : "monthly"}</changefreq>
-    <priority>${path === "/" ? "1.0" : "0.8"}</priority>
-  </url>`,
-  )
-  .join("\n");
+export function generateSitemapXml(origin = entityProfile.website.origin) {
+  const normalizedOrigin = normalizeOrigin(origin);
+  const urls = getStaticRoutes()
+    .map((route) => getSeoForPage(route.page, normalizedOrigin).canonicalUrl)
+    .map((url) => `  <url>\n    <loc>${escapeXml(url)}</loc>\n  </url>`)
+    .join("\n");
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>
 `;
+}
 
-await writeFile("public/sitemap.xml", sitemap, "utf8");
-console.log(`Generated public/sitemap.xml for ${siteUrl}`);
+export function generateRobotsTxt(origin = entityProfile.website.origin) {
+  const normalizedOrigin = normalizeOrigin(origin);
+  return [
+    "User-agent: *",
+    "Allow: /",
+    "",
+    `Sitemap: ${normalizedOrigin}/sitemap.xml`,
+    "",
+  ].join("\n");
+}
+
+export async function writeSiteArtifacts(
+  outputDir = "dist",
+  origin = entityProfile.website.origin,
+) {
+  await mkdir(outputDir, { recursive: true });
+  const sitemapPath = path.join(outputDir, "sitemap.xml");
+  const robotsPath = path.join(outputDir, "robots.txt");
+
+  await Promise.all([
+    writeFile(sitemapPath, generateSitemapXml(origin), "utf8"),
+    writeFile(robotsPath, generateRobotsTxt(origin), "utf8"),
+  ]);
+
+  return { sitemapPath, robotsPath };
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
+  const outputDir = process.argv[2] ?? "dist";
+  const origin = process.env.SITE_URL ?? entityProfile.website.origin;
+  const outputs = await writeSiteArtifacts(outputDir, origin);
+  console.log(`Generated ${outputs.sitemapPath} and ${outputs.robotsPath}`);
+}

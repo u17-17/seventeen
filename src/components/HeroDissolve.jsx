@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { hero } from "../data/siteData.js";
 
 const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
 
@@ -201,10 +202,10 @@ export default function HeroDissolve() {
               }}
             >
               <p className="mb-5 text-xs font-black uppercase tracking-[0.28em] text-neutral-500">
-                YAN TUTOR
+                {hero.brand}
               </p>
               <h2 className="whitespace-nowrap text-[clamp(2.25rem,8.5vw,7.25rem)] font-black leading-none tracking-[-0.02em] text-[#17120c]">
-                你好，我是闫老师
+                {hero.chineseTitle}
               </h2>
             </div>
 
@@ -215,9 +216,12 @@ export default function HeroDissolve() {
                 transform: `translate3d(0, ${visual.bottomCopyY}px, 0)`,
               }}
             >
-              <p>一个面向高一、高二学生的数学 / 物理辅导老师。</p>
+              <p>{hero.serviceSummary}</p>
               <p className="mt-2">
-                我更关注的不是让你记住公式，而是帮你真正看懂题目背后的逻辑。
+                {hero.description}
+              </p>
+              <p className="mt-4 text-sm font-semibold text-[#665c4e] sm:text-base">
+                {hero.areaSummary}
               </p>
             </div>
           </div>
@@ -285,10 +289,10 @@ export default function HeroDissolve() {
               }}
             >
               <h1 className="whitespace-nowrap text-[clamp(2.35rem,10vw,8.8rem)] font-black leading-none tracking-[-0.02em] text-[#fbf4e8]">
-                Hello, I&apos;m Yan.
+                {hero.englishTitle}
               </h1>
               <p className="mt-7 text-base font-medium text-[#d9c8ad]/75 sm:text-xl">
-                Math / Physics / 22岁 / 河北邯郸
+                {hero.identityLine} · {hero.subtitle}
               </p>
             </div>
           </div>

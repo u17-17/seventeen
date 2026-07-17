@@ -1,7 +1,9 @@
-const siteName = "YAN TUTOR";
-const defaultTitle = "YAN TUTOR｜高中数学 / 物理一对一学习诊断";
+import { entityProfile, getCompactSubjectLabel } from "../data/entityProfile.js";
+
+const siteName = entityProfile.auxiliaryBrand;
+const defaultTitle = `${siteName}｜${getCompactSubjectLabel()}一对一学习诊断`;
 const defaultDescription =
-  "闫老师高中数学 / 高中物理一对一辅导，专注学习问题诊断、题型识别、过程拆解和错因复盘。";
+  `${entityProfile.teacher.shortName}${getCompactSubjectLabel()}一对一辅导，专注学习问题诊断、题型识别、过程拆解和错因复盘。`;
 const defaultImage = "/og-image.svg";
 
 function normalizeOrigin(origin) {
@@ -27,17 +29,39 @@ export function getSeoForPage(page, origin = globalThis.location?.origin) {
   };
 }
 
+export function getNotFoundSeo() {
+  return {
+    title: `页面未找到｜${siteName}`,
+    description: "这个地址可能已更改或不存在，请返回首页或查看家教服务说明。",
+    robots: "noindex,follow",
+    canonicalUrl: null,
+  };
+}
+
 export function getStructuredData(origin = globalThis.location?.origin) {
   const url = absoluteUrl("/", origin);
 
   return {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
-    name: siteName,
+    name: entityProfile.canonicalName,
+    alternateName: entityProfile.auxiliaryBrand,
     url,
     description: defaultDescription,
-    areaServed: "河北邯郸及线上",
-    knowsAbout: ["高中数学", "高中物理", "学习诊断", "错因复盘", "一对一辅导"],
+    areaServed: [
+      entityProfile.services.offlineArea,
+      entityProfile.services.onlineArea,
+    ],
+    founder: {
+      "@type": "Person",
+      name: entityProfile.teacher.name,
+    },
+    knowsAbout: [
+      ...entityProfile.services.subjects,
+      "学习诊断",
+      "错因复盘",
+      "一对一辅导",
+    ],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "学习诊断预约",
@@ -68,6 +92,10 @@ function setCanonical(href) {
   link.setAttribute("href", href);
 }
 
+function removeFromHead(selector) {
+  document.head.querySelector(selector)?.remove();
+}
+
 function setStructuredData(data) {
   let script = document.head.querySelector('script[data-seo="structured-data"]');
   if (!script) {
@@ -79,11 +107,31 @@ function setStructuredData(data) {
   script.textContent = JSON.stringify(data);
 }
 
-export function applySeo(page) {
-  const seo = getSeoForPage(page, window.location.origin);
+export function applySeo(page, notFound = false) {
+  const seo = notFound ? getNotFoundSeo() : getSeoForPage(page, window.location.origin);
 
   document.title = seo.title;
   setMeta('meta[name="description"]', { name: "description", content: seo.description });
+  setMeta('meta[name="robots"]', {
+    name: "robots",
+    content: seo.robots ?? "index,follow",
+  });
+
+  if (notFound) {
+    removeFromHead('link[rel="canonical"]');
+    document.head.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"]').forEach(
+      (element) => element.remove(),
+    );
+    removeFromHead('script[data-seo="structured-data"]');
+    return;
+  }
+
+  setMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
+  setMeta('meta[property="og:locale"]', { property: "og:locale", content: "zh_CN" });
+  setMeta('meta[property="og:site_name"]', {
+    property: "og:site_name",
+    content: entityProfile.auxiliaryBrand,
+  });
   setMeta('meta[property="og:title"]', { property: "og:title", content: seo.title });
   setMeta('meta[property="og:description"]', {
     property: "og:description",
@@ -91,12 +139,24 @@ export function applySeo(page) {
   });
   setMeta('meta[property="og:url"]', { property: "og:url", content: seo.canonicalUrl });
   setMeta('meta[property="og:image"]', { property: "og:image", content: seo.ogImage });
+  setMeta('meta[property="og:image:alt"]', {
+    property: "og:image:alt",
+    content: `${entityProfile.canonicalName}分享图`,
+  });
+  setMeta('meta[name="twitter:card"]', {
+    name: "twitter:card",
+    content: "summary_large_image",
+  });
   setMeta('meta[name="twitter:title"]', { name: "twitter:title", content: seo.title });
   setMeta('meta[name="twitter:description"]', {
     name: "twitter:description",
     content: seo.description,
   });
   setMeta('meta[name="twitter:image"]', { name: "twitter:image", content: seo.ogImage });
+  setMeta('meta[name="twitter:image:alt"]', {
+    name: "twitter:image:alt",
+    content: `${entityProfile.canonicalName}分享图`,
+  });
   setCanonical(seo.canonicalUrl);
   setStructuredData(getStructuredData(window.location.origin));
 }

@@ -74,7 +74,7 @@ export default function ContactSection() {
                   微信咨询
                 </div>
                 <h3 className="mt-4 text-xl font-bold leading-tight text-brand-deep sm:text-2xl">
-                  填写后直接提交，我会通过微信联系你
+                  填写后直接提交，我会按所填联系方式联系你
                 </h3>
                 <p className="mt-4 text-base leading-7 text-neutral-600">
                   {contact.description}

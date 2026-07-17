@@ -5,7 +5,7 @@ import { navigateToHref } from "../utils/scroll.js";
 
 function PageIntro({ page }) {
   const Icon = page.icon;
-  const showVisual = page.slug === "classroom";
+  const showVisual = page.showVisual === true;
 
   return (
     <section className="relative overflow-hidden bg-cream pb-16 pt-28 sm:pb-20 sm:pt-32">
@@ -188,6 +188,16 @@ function IconGridSection({ section }) {
         >
           {section.items.map((item) => {
             const Icon = item.icon;
+            const metadata = [
+              item.resourceId && ["内容编号", item.resourceId],
+              item.status && ["状态", item.status],
+              item.audience && ["适用对象", item.audience],
+              item.author && ["作者", item.author],
+              item.updatedAt && ["更新时间", item.updatedAt],
+              item.contentFamilyId && ["内容家族", item.contentFamilyId],
+              item.sourceIds?.length && ["来源", item.sourceIds.join("、")],
+              item.authorizationStatus && ["授权状态", item.authorizationStatus],
+            ].filter(Boolean);
 
             return (
               <motion.article
@@ -210,6 +220,28 @@ function IconGridSection({ section }) {
                 <p className="mt-4 text-base leading-7 text-neutral-600">
                   {item.content}
                 </p>
+                {metadata.length > 0 && (
+                  <dl className="mt-6 grid gap-2 border-t border-brand/10 pt-5 text-sm leading-6">
+                    {metadata.map(([label, value]) => (
+                      <div key={label} className="grid gap-0.5 sm:grid-cols-[5rem_1fr]">
+                        <dt className="font-semibold text-brand-deep/70">{label}</dt>
+                        <dd className="break-words text-neutral-600">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {item.href && (
+                  <a
+                    href={item.href}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigateToHref(item.href);
+                    }}
+                    className="mt-6 inline-flex min-h-11 items-center rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-cream transition-colors hover:bg-brand-deep"
+                  >
+                    {item.linkLabel || "继续了解"}
+                  </a>
+                )}
               </motion.article>
             );
           })}
@@ -414,38 +446,38 @@ function CaseSection({ section }) {
                   {item.subject}
                 </span>
                 <span className="rounded-full bg-cream/70 px-4 py-1.5 text-xs font-semibold text-brand">
-                  问题类型
+                  {item.period || "问题类型"}
                 </span>
+                {item.evidenceId && (
+                  <span className="rounded-full border border-brand/15 bg-white px-4 py-1.5 text-xs font-semibold text-brand">
+                    证据编号：{item.evidenceId}
+                  </span>
+                )}
               </div>
               <h3 className="text-2xl font-black leading-tight text-brand-deep sm:text-3xl lg:text-4xl">
                 {item.title}
               </h3>
               <div className="mt-8 grid gap-5 lg:grid-cols-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-deep">
-                    问题
-                  </p>
-                  <p className="mt-3 text-base leading-7 text-neutral-600">
-                    {item.problem}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-deep">
-                    方法
-                  </p>
-                  <p className="mt-3 text-base leading-7 text-neutral-600">
-                    {item.method}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-deep">
-                    目标
-                  </p>
-                  <p className="mt-3 text-base leading-7 text-neutral-600">
-                    {item.result}
-                  </p>
-                </div>
+                {[
+                  [item.evidenceId ? "公开背景" : "问题", item.problem],
+                  [item.evidenceId ? "教学过程" : "方法", item.method],
+                  [item.evidenceId ? "阶段记录" : "目标", item.result],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-deep">
+                      {label}
+                    </p>
+                    <p className="mt-3 text-base leading-7 text-neutral-600">
+                      {value}
+                    </p>
+                  </div>
+                ))}
               </div>
+              {item.disclaimer && (
+                <p className="mt-8 rounded-2xl border border-accent/40 bg-accent/10 px-5 py-4 text-sm font-semibold leading-6 text-brand-deep">
+                  结果说明：{item.disclaimer}
+                </p>
+              )}
             </motion.article>
           ))}
         </motion.div>

@@ -1,22 +1,170 @@
 import {
   BadgeCheck,
-  Camera,
+  BookOpen,
   ClipboardList,
   FileText,
   HelpCircle,
   Layers3,
-  NotebookPen,
+  MapPin,
+  MessageCircle,
   UserRound,
 } from "lucide-react";
+import {
+  authorizedReviews,
+  faqGroups,
+  learningResources,
+  verifiedCases,
+} from "./contentData.js";
+import {
+  entityProfile,
+  getCompactSubjectLabel,
+  getFormalGradeLabel,
+  getServiceModeLabel,
+} from "./entityProfile.js";
+
+const faqItemsById = new Map(
+  faqGroups.flatMap((group) => group.items.map((item) => [item.faqId, item])),
+);
 
 export const pageNavItems = [
+  { label: "家教主页", href: "/tutor" },
   { label: "我的故事", href: "/story" },
   { label: "FAQ", href: "/faq" },
-  { label: "课堂复现", href: "/classroom" },
+  { label: "学习内容", href: "/classroom" },
   { label: "教学案例", href: "/cases" },
 ];
 
+export const notFoundPage = Object.freeze({
+  eyebrow: "404 / PAGE NOT FOUND",
+  title: "页面没有找到",
+  description: "这个地址可能已更改或不存在。你可以返回首页，或继续查看家教服务说明。",
+  primaryLink: Object.freeze({ href: "/", label: "返回首页" }),
+  secondaryLink: Object.freeze({ href: "/tutor", label: "查看家教服务" }),
+});
+
 export const staticPages = {
+  tutor: {
+    slug: "tutor",
+    eyebrow: "Tutor Entity",
+    title: entityProfile.canonicalName,
+    subtitle: `${entityProfile.teacher.name}提供${getCompactSubjectLabel()}一对一学习诊断与辅导，主要服务${getFormalGradeLabel()}学生：${entityProfile.services.offlineArea}可线下沟通，同时接受${entityProfile.services.onlineArea}线上辅导。`,
+    icon: UserRound,
+    intro: {
+      title: "把老师、科目、地区和联系方式放在同一个稳定页面",
+      body:
+        "这一页是家教服务的规范入口，集中说明闫老师是谁、主要辅导什么学生、在哪些地区服务，以及如何先做一次学习问题诊断。",
+      points: [
+        entityProfile.teacher.name,
+        getCompactSubjectLabel(),
+        getServiceModeLabel(),
+      ],
+    },
+    sections: [
+      {
+        title: "核心事实",
+        items: [
+          {
+            title: "老师是谁",
+            content:
+              `${entityProfile.teacher.name}，学校为${entityProfile.teacher.school}，专业为${entityProfile.teacher.major}，当前展示年龄为 ${entityProfile.teacher.displayAge}。${entityProfile.teacher.photoPolicy}，采用文字身份信息呈现。`,
+            href: "/story",
+            linkLabel: "查看教师介绍",
+            icon: UserRound,
+          },
+          {
+            title: "辅导什么",
+            content:
+              `正式服务对象为${getFormalGradeLabel()}学生，科目为${entityProfile.services.subjects.join("、")}。先通过一对一学习诊断判断是基础、题型、步骤还是复盘问题。`,
+            icon: BookOpen,
+          },
+          {
+            title: "在哪里上课",
+            content:
+              `主要提供${entityProfile.services.offlineArea}线下高中数学、物理一对一家教，同时接受${entityProfile.services.onlineArea}线上辅导。`,
+            icon: MapPin,
+          },
+        ],
+      },
+      {
+        title: "高中数学、物理服务说明",
+        items: [
+          {
+            title: entityProfile.services.subjects[0],
+            content:
+              `面向${entityProfile.services.formalGrades.join("、")}学生。先看读题、列条件和选择第一步的过程，再判断需要补基础知识、函数等题型识别，还是考试错因复盘。`,
+            icon: BadgeCheck,
+          },
+          {
+            title: entityProfile.services.subjects[1],
+            content:
+              `面向${entityProfile.services.formalGrades.join("、")}学生。把受力、电学、能量等模型分开梳理，再训练综合题中怎样判断该用哪一条分析路径。`,
+            icon: Layers3,
+          },
+          {
+            title: "升高一咨询和学习方式过渡",
+            content:
+              "升高一咨询只作为学习方法和适应问题的沟通入口，不扩展为正式长期服务年级。",
+            icon: ClipboardList,
+          },
+        ],
+      },
+      {
+        title: "已确认经历与匿名案例",
+        items: [
+          ...verifiedCases.map((item) => ({
+            label: item.period,
+            title: item.title,
+            content: item.publicSummary,
+            evidenceId: item.evidenceId,
+          })),
+          {
+            label: "2025.06 - 2025.09",
+            title: "升高一咨询经历",
+            content:
+              "带过三名高一学生，围绕初中到高中学习方式变化进行衔接教学，熟悉高一学生常见适应问题。",
+          },
+        ],
+      },
+      {
+        title: "常见问题",
+        items: [
+          faqItemsById.get("FAQ-SERVICE-003"),
+          faqItemsById.get("FAQ-EVIDENCE-003"),
+          {
+            question: "怎样联系闫老师？",
+            answer:
+              `可以通过首页学习诊断表或微信号 ${entityProfile.contact.wechatId} 联系；微信二维码也会和微信号同时展示。`,
+          },
+        ],
+      },
+      {
+        title: "站内继续了解",
+        items: [
+          {
+            title: "查看常见问题",
+            content: "了解适合哪些学生、第一次沟通准备什么，以及线上线下安排边界。",
+            href: "/faq",
+            linkLabel: "进入 FAQ",
+            icon: HelpCircle,
+          },
+          {
+            title: "查看教学案例",
+            content: "查看已经登记证据、完成匿名处理的案例和已获授权的匿名反馈。",
+            href: "/cases",
+            linkLabel: "进入教学案例",
+            icon: Layers3,
+          },
+          {
+            title: "预约学习诊断",
+            content: "先填写学生年级、科目和主要问题，再决定下一步是否适合继续沟通。",
+            href: "/#contact",
+            linkLabel: "去预约诊断",
+            icon: MessageCircle,
+          },
+        ],
+      },
+    ],
+  },
   story: {
     slug: "story",
     eyebrow: "Story",
@@ -30,6 +178,31 @@ export const staticPages = {
       points: ["先诊断", "再拆问题", "最后安排训练"],
     },
     sections: [
+      {
+        title: "教师身份与服务边界",
+        items: [
+          {
+            title: entityProfile.teacher.name,
+            content:
+              `学校为${entityProfile.teacher.school}，专业为${entityProfile.teacher.major}，当前展示年龄为 ${entityProfile.teacher.displayAge}。${entityProfile.teacher.photoPolicy}，页面使用文字身份信息。`,
+            href: "/tutor",
+            linkLabel: "查看家教服务主页",
+            icon: UserRound,
+          },
+          {
+            title: "正式服务对象",
+            content:
+              `正式面向${entityProfile.services.formalGrades.join("、")}学生，提供${entityProfile.services.subjects.join("、")}一对一学习诊断与辅导。`,
+            icon: BookOpen,
+          },
+          {
+            title: "服务范围",
+            content:
+              `${entityProfile.services.offlineArea}线下辅导；${entityProfile.services.onlineArea}线上辅导。`,
+            icon: MapPin,
+          },
+        ],
+      },
       {
         title: "我为什么做一对一辅导",
         items: [
@@ -79,107 +252,55 @@ export const staticPages = {
     slug: "faq",
     eyebrow: "FAQ",
     title: "常见问题",
-    subtitle: "先把家长最关心的问题讲清楚：适合谁、怎么上、怎么判断是否有效。",
+    subtitle: "先把服务边界、沟通准备、案例来源和公开授权讲清楚。",
     icon: HelpCircle,
     intro: {
-      title: "适合先快速了解的家长",
+      title: "先看清楚是否在服务范围内",
       body:
-        "如果你还不确定孩子是基础问题、方法问题，还是考试状态问题，可以先从这些问题开始判断。",
-      points: ["高一 / 高二数学物理", "一对一诊断", "先看问题，再定安排"],
+        "这里集中回答正式服务对象、线上线下范围、咨询信息、案例边界和价格公开方式；仍有疑问时再预约学习诊断。",
+      points: ["高一 / 高二", "高中数学 / 高中物理", "案例与授权可追溯"],
     },
-    sections: [
-      {
-        title: "课程安排",
-        items: [
-          {
-            question: "主要辅导哪些学生？",
-            answer:
-              "当前主要面向高一、高二学生，科目以高中数学和高中物理为主，也可以做初高衔接阶段的学习方法梳理。",
-          },
-          {
-            question: "线上和线下都可以吗？",
-            answer:
-              "可以。线下更适合需要强监督和板书推导的学生，线上更适合时间固定、能主动沟通问题的学生。",
-          },
-          {
-            question: "第一次沟通需要准备什么？",
-            answer:
-              "建议准备年级、科目、当前分数、最近一次试卷、主要卡点和可上课时间。信息越具体，诊断越准确。",
-          },
-        ],
-      },
-      {
-        title: "学习效果",
-        items: [
-          {
-            question: "怎么判断孩子适不适合继续上？",
-            answer:
-              "优先看三件事：课后能否复述思路、同类题是否少卡一步、错因是否越来越具体。分数变化通常会滞后于方法变化。",
-          },
-          {
-            question: "会不会只讲作业答案？",
-            answer:
-              "不会把课堂变成答案代写。作业题会用来反查知识漏洞、题型识别和步骤习惯。",
-          },
-          {
-            question: "多久反馈一次学习情况？",
-            answer:
-              "建议每几次课做一次简短复盘，说明这段时间解决了什么、还卡在哪里、下一阶段怎么推进。",
-          },
-        ],
-      },
-    ],
+    sections: faqGroups,
   },
   classroom: {
     slug: "classroom",
-    eyebrow: "Classroom Replay",
-    title: "课堂复现",
-    subtitle: "用课堂截图、板书整理和课后复盘，让家长看到一节课到底发生了什么。",
-    icon: Camera,
+    eyebrow: "Learning Content",
+    title: "学习内容",
+    subtitle: "先发布可核验的学习主题摘要，后续可按同一结构补充正文，无需引入复杂内容管理系统。",
+    icon: BookOpen,
+    showVisual: false,
     intro: {
-      title: "把抽象的辅导过程变得可追踪",
+      title: "从真实问题出发整理学习主题",
       body:
-        "这一页适合展示真实上课材料：题目拆解、板书路径、学生卡点和课后复盘。涉及学生隐私的内容需要先脱敏。",
-      points: ["题目拆解", "板书路径", "课后复盘"],
+        "每个主题都标注适用对象、内容家族、作者、更新时间和来源。当前仅提供主题摘要，不把未完成内容包装成正式文章。",
+      points: ["主题摘要", "来源可追溯", "后续可扩展"],
     },
     sections: [
       {
-        title: "课堂材料类型",
-        items: [
-          {
-            title: "上课截图",
-            icon: Camera,
-            content: "展示讲题过程中的关键节点，例如题目条件标注、思路分叉、学生容易忽略的位置。",
-          },
-          {
-            title: "板书截图",
-            icon: NotebookPen,
-            content: "保留推导过程，而不只是最终答案。家长能看到每一步为什么这样做。",
-          },
-          {
-            title: "课后复盘",
-            icon: ClipboardList,
-            content: "记录本节课解决的问题、仍然卡住的点，以及下一次课的训练方向。",
-          },
-        ],
+        title: "学习主题摘要",
+        items: learningResources.map((item, index) => ({
+          ...item,
+          content: item.summary,
+          icon: [BookOpen, Layers3, ClipboardList][index],
+        })),
       },
       {
-        title: "一节课的复现结构",
+        title: "每篇内容会讲清楚什么",
         items: [
           {
-            label: "课前",
-            title: "确认本节目标",
-            content: "根据近期作业或试卷，确定本节课优先处理的题型和知识点。",
+            title: "问题与适用场景",
+            content: "先说明这个学习问题通常怎样出现、适合哪些学生参考，以及哪些情况不在本文范围内。",
+            icon: HelpCircle,
           },
           {
-            label: "课中",
-            title: "拆题与追问",
-            content: "让学生说出卡点，再用追问方式定位是概念、模型还是步骤问题。",
+            title: "判断与处理步骤",
+            content: "把判断顺序和练习步骤写成可执行的小单元，帮助读者理解下一步该观察什么。",
+            icon: ClipboardList,
           },
           {
-            label: "课后",
-            title: "沉淀复盘",
-            content: "整理本节课的可复用方法，并给出下一次练习方向。",
+            title: "边界、来源与下一步",
+            content: "明确内容依据、适用边界和可继续阅读或咨询的入口，不把个体经验写成普遍承诺。",
+            icon: FileText,
           },
         ],
       },
@@ -189,87 +310,54 @@ export const staticPages = {
     slug: "cases",
     eyebrow: "Teaching Cases",
     title: "教学案例",
-    subtitle: "不展示答案堆砌，而展示一节课怎么把公式来源、几何题眼和证明路径讲清楚。",
+    subtitle: "只展示已经登记证据、完成匿名处理的教学案例，以及已经获得公开授权的匿名反馈。",
     icon: Layers3,
     intro: {
-      title: "把难题拆成可复用的方法",
+      title: "案例可追溯，结果有边界",
       body:
-        "下面两个案例来自课堂板书：一个讲公式如何推导和迁移，一个讲立体几何如何从目标反推题眼。",
-      points: ["公式来源", "逆推题眼", "板书过程"],
+        "本页只展示两条已核验且完成匿名处理的案例；当前公开的三条学生或家长反馈均已获得公开授权。案例中的阶段变化仅描述对应记录，不构成普遍效果承诺。",
+      points: ["证据编号可追溯", "未成年人信息脱敏", "个体结果不作普遍承诺"],
     },
     sections: [
       {
-        title: "两个深案例：看见一节课怎么推进",
-        items: [
-          {
-            title: "公式不是背出来的，是一步步长出来的",
-            subject: "高一数学",
-            focus: "公式推导",
-            problem: "学生常把三角函数公式当成零散结论，背得住一部分，却不知道遇到变形题该怎么迁移。",
-            method: "先从两角和差公式的来源讲起，再顺着公式之间的生长关系往下看二倍角、半角、万能公式和辅助角。",
-            result: "学生不只记住公式，更知道看到复杂角、平方项、线性组合时该优先往哪个方向转化。",
-            highlights: [
-              "先问公式为什么出现，把复合角拆回熟悉角。",
-              "用图像和向量分解推导两角和差，不直接给结论。",
-              "把后续公式串成一条迁移路线，减少孤立记忆。",
-            ],
-            images: [
-              {
-                src: "/cases/formula-derivation-01.png",
-                alt: "三角函数两角和差公式推导板书",
-                caption: "从两角和差公式讲来源：先问为什么出现，再一步步推出 sin、cos、tan。",
-              },
-              {
-                src: "/cases/formula-derivation-02.png",
-                alt: "二倍角半角万能公式和辅助角公式关系板书",
-                caption: "顺着公式关系往下看：二倍角、半角、万能公式和辅助角不再孤立记忆。",
-              },
-            ],
-          },
-          {
-            title: "立体几何不是念答案，是从目标反推题眼",
-            subject: "高二数学",
-            focus: "立体几何逆推",
-            problem: "学生看得懂答案里的每一步，但自己做题时不知道第一条辅助线、第一组垂直关系从哪里来。",
-            method: "先从要证明的目标往回看，把面面垂直转成线面垂直，再继续找平面内第二条相交直线。",
-            result: "学生会把目标、现成条件和待构造关系串起来，形成同类几何证明可复用的逆推路线。",
-            highlights: [
-              "先盯住要证什么，把大目标拆成能操作的小目标。",
-              "从已知直角、圆心和轴线关系里找候选垂线。",
-              "最后把思路整理成规范证明，避免只会听答案。",
-            ],
-            images: [
-              {
-                src: "/cases/solid-geometry-01.png",
-                alt: "立体几何从目标反推题眼板书",
-                caption: "先从目标往回看：把“面面垂直”转成要找的线面垂直。",
-              },
-              {
-                src: "/cases/solid-geometry-02.png",
-                alt: "立体几何逆推路线整理成完整证明板书",
-                caption: "把题眼串成完整证明：目标反推、关系构造、规范落地。",
-              },
-            ],
-          },
-        ],
+        title: "经核验的匿名案例",
+        items: verifiedCases.map((item) => ({
+          ...item,
+          subject: `${item.grade} · ${item.subject}`,
+        })),
       },
       {
-        title: "这类课我会怎么讲",
+        title: "已获授权的匿名反馈",
+        items: authorizedReviews.map((item) => ({
+          ...item,
+          title: item.author,
+          content: `“${item.quote}”`,
+          icon: MessageCircle,
+        })),
+      },
+      {
+        title: "继续了解",
         items: [
           {
-            title: "先讲来源，不急着背结论",
-            content: "公式课会先回答为什么出现、怎么推出来，再看它和后续公式的生长关系。",
-            icon: NotebookPen,
+            title: "查看家教服务说明",
+            content: "了解正式服务对象、科目和线上线下范围。",
+            href: "/tutor",
+            linkLabel: "进入家教主页",
+            icon: UserRound,
           },
           {
-            title: "先找题眼，不急着套答案",
-            content: "几何课会先从要证什么往回看，把面面、线面、线线关系一步步换成可操作的目标。",
-            icon: Layers3,
+            title: "查看常见问题",
+            content: "了解案例边界、反馈授权和第一次咨询需要准备的信息。",
+            href: "/faq",
+            linkLabel: "进入 FAQ",
+            icon: HelpCircle,
           },
           {
-            title: "课后沉淀成可迁移路径",
-            content: "最后把本节课的方法整理成遇到同类题时能复用的判断顺序和检查清单。",
-            icon: BadgeCheck,
+            title: "预约学习诊断",
+            content: "只提交年级、科目、主要卡点和可沟通时间，不提交学生身份信息。",
+            href: "/#contact",
+            linkLabel: "去预约诊断",
+            icon: MessageCircle,
           },
         ],
       },

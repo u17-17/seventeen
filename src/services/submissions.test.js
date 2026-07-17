@@ -2,18 +2,20 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   buildConsultationMessage,
+  buildDiagnosisPayload,
   copyTextWithFallback,
+  createSubmissionRequestId,
 } from "./submissions.js";
 
 describe("consultation message generation", () => {
   it("builds a WeChat-ready consultation message", () => {
     const message = buildConsultationMessage({
-      guardianName: "李女士",
-      contact: "13800138000",
+      guardianName: "测试家长",
+      contact: "test-wechat-001",
       grade: "高一",
       subject: "数学",
-      currentScore: "86",
-      targetScore: "110",
+      deliveryPreference: "涉县线下",
+      scoreRange: "80—99",
       mainConcern: "函数题听得懂，但是自己做题没有切入点。",
       availability: "周六下午",
     });
@@ -24,28 +26,75 @@ describe("consultation message generation", () => {
         "【学习诊断咨询】",
         "学生年级：高一",
         "咨询科目：数学",
-        "当前分数：86",
-        "目标分数：110",
+        "授课偏好：涉县线下",
+        "当前成绩区间：80—99",
         "主要问题：函数题听得懂，但是自己做题没有切入点。",
-        "可上课时间：周六下午",
-        "联系方式：13800138000",
-        "家长称呼：李女士",
+        "可沟通时间：周六下午",
+        "联系方式：test-wechat-001",
+        "联系人称呼：测试家长",
       ].join("\n"),
     );
+    assert.doesNotMatch(message, /目标分数|学生姓名|学校|班级/);
   });
 
-  it("uses placeholders for optional empty score fields", () => {
+  it("uses placeholders for optional fields", () => {
     const message = buildConsultationMessage({
-      guardianName: "李女士",
-      contact: "L09-29",
+      contact: "test-contact-002",
       grade: "高二",
       subject: "物理",
+      deliveryPreference: "邯郸线上",
       mainConcern: "模型题容易乱，想先做一次问题诊断。",
-      availability: "平时晚上",
     });
 
-    assert.match(message, /当前分数：暂未填写/);
-    assert.match(message, /目标分数：暂未填写/);
+    assert.match(message, /当前成绩区间：暂未填写/);
+    assert.match(message, /可沟通时间：暂未填写/);
+    assert.match(message, /联系人称呼：暂未填写/);
+  });
+
+  it("builds the API payload with the real honeypot and anti-repeat context", () => {
+    const payload = buildDiagnosisPayload(
+      {
+        guardianName: "测试家长",
+        contact: "test-wechat-003",
+        grade: "升高一咨询",
+        subject: "暂不确定",
+        deliveryPreference: "暂不确定",
+        scoreRange: "",
+        mainConcern: "希望先了解高中学习方式变化和需要准备的内容。",
+        availability: "需要再沟通",
+        privacyConsent: true,
+        website: "bot-filled.example",
+      },
+      {
+        source: "/",
+        formStartedAt: 1000,
+        requestId: "00000000-0000-4000-8000-000000000001",
+      },
+    );
+
+    assert.deepEqual(payload, {
+      guardianName: "测试家长",
+      contact: "test-wechat-003",
+      grade: "升高一咨询",
+      subject: "暂不确定",
+      deliveryPreference: "暂不确定",
+      scoreRange: "",
+      problem: "希望先了解高中学习方式变化和需要准备的内容。",
+      availableTime: "需要再沟通",
+      privacyConsent: true,
+      source: "/",
+      website: "bot-filled.example",
+      formStartedAt: 1000,
+      requestId: "00000000-0000-4000-8000-000000000001",
+    });
+  });
+
+  it("creates a stable request id through the supplied crypto implementation", () => {
+    const requestId = createSubmissionRequestId({
+      randomUUID: () => "00000000-0000-4000-8000-000000000002",
+    });
+
+    assert.equal(requestId, "00000000-0000-4000-8000-000000000002");
   });
 
   it("uses navigator.clipboard when available", async () => {

@@ -1,22 +1,17 @@
-const scorePattern = /^\d+(\.\d+)?$/;
+import { consultationConfig } from "../data/consultationConfig.js";
 
 function text(value) {
   return String(value ?? "").trim();
 }
 
-function validateScore(value, label, errors, field) {
+function validateOption(value, options, errors, field, emptyMessage, invalidMessage) {
   const normalized = text(value);
-  if (!normalized) return;
-
-  if (!scorePattern.test(normalized)) {
-    errors[field] = `${label}需在 0-150 之间`;
+  if (!normalized) {
+    if (emptyMessage) errors[field] = emptyMessage;
     return;
   }
 
-  const score = Number(normalized);
-  if (score < 0 || score > 150) {
-    errors[field] = `${label}需在 0-150 之间`;
-  }
+  if (!options.includes(normalized)) errors[field] = invalidMessage;
 }
 
 function result(errors) {
@@ -32,20 +27,74 @@ export function validateConsultationForm(values) {
   const contact = text(values.contact);
   const grade = text(values.grade);
   const subject = text(values.subject);
+  const deliveryPreference = text(values.deliveryPreference);
+  const scoreRange = text(values.scoreRange);
   const mainConcern = text(values.mainConcern);
   const availability = text(values.availability);
+  const limits = consultationConfig.limits;
 
-  if (!guardianName) errors.guardianName = "请填写家长称呼";
+  if (guardianName.length > limits.guardianName) {
+    errors.guardianName = `联系人称呼最多 ${limits.guardianName} 个字`;
+  }
   if (!contact) errors.contact = "请填写手机号或微信号";
-  else if (contact.length < 5) errors.contact = "联系方式至少 5 个字符";
-  if (!grade) errors.grade = "请选择学生年级";
-  if (!subject) errors.subject = "请选择咨询科目";
-  if (!mainConcern) errors.mainConcern = "请简单描述学生当前问题";
-  else if (mainConcern.length < 8) errors.mainConcern = "问题描述至少 8 个字";
-  if (!availability) errors.availability = "请选择或填写可沟通时间";
+  else if (contact.length < limits.contactMin) {
+    errors.contact = `联系方式至少 ${limits.contactMin} 个字符`;
+  } else if (contact.length > limits.contactMax) {
+    errors.contact = `联系方式最多 ${limits.contactMax} 个字符`;
+  }
 
-  validateScore(values.currentScore, "当前分数", errors, "currentScore");
-  validateScore(values.targetScore, "目标分数", errors, "targetScore");
+  validateOption(
+    grade,
+    consultationConfig.grades,
+    errors,
+    "grade",
+    "请选择学生年级",
+    "请选择有效的学生年级",
+  );
+  validateOption(
+    subject,
+    consultationConfig.subjects,
+    errors,
+    "subject",
+    "请选择咨询科目",
+    "请选择有效的咨询科目",
+  );
+  validateOption(
+    deliveryPreference,
+    consultationConfig.deliveryPreferences,
+    errors,
+    "deliveryPreference",
+    "请选择授课偏好",
+    "请选择有效的授课偏好",
+  );
+  validateOption(
+    scoreRange,
+    consultationConfig.scoreRanges,
+    errors,
+    "scoreRange",
+    null,
+    "请选择有效的成绩区间",
+  );
+
+  if (!mainConcern) errors.mainConcern = "请简单描述学生当前问题";
+  else if (mainConcern.length < limits.mainConcernMin) {
+    errors.mainConcern = `问题描述至少 ${limits.mainConcernMin} 个字`;
+  } else if (mainConcern.length > limits.mainConcernMax) {
+    errors.mainConcern = `问题描述最多 ${limits.mainConcernMax} 个字`;
+  }
+
+  validateOption(
+    availability,
+    consultationConfig.availabilityOptions,
+    errors,
+    "availability",
+    null,
+    "请选择有效的可沟通时间",
+  );
+
+  if (values.privacyConsent !== true) {
+    errors.privacyConsent = "请阅读并同意个人信息说明";
+  }
 
   return result(errors);
 }
