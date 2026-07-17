@@ -6,8 +6,9 @@ import { about, contact, hero } from "./siteData.js";
 
 describe("home page content", () => {
   it("keeps the confirmed teacher identity in the shared entity profile", () => {
-    assert.equal(entityProfile.teacher.school, "内江师范学院");
-    assert.equal(entityProfile.teacher.major, "智能科学与技术");
+    assert.equal(entityProfile.teacher.name, "闫老师");
+    assert.equal(entityProfile.teacher.school, "河北师范大学");
+    assert.equal(entityProfile.teacher.major, "教育学");
     assert.equal(entityProfile.teacher.displayAge, "22 岁");
     assert.equal(entityProfile.teacher.photoPolicy, "当前不展示教师照片");
   });
@@ -31,6 +32,7 @@ describe("home page content", () => {
       );
     }
 
+    assert.equal(serialized.includes("闫奕龙"), false);
     assert.deepEqual(
       about.services.map((service) => service.title),
       entityProfile.services.subjects,

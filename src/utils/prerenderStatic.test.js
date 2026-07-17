@@ -65,7 +65,10 @@ describe("static route prerendering", () => {
     assert.match(html, /<link rel="canonical" href="https:\/\/seventeen-yan\.cn\/" \/>/);
     assert.match(html, /<script type="application\/ld\+json" data-seo="structured-data">/);
     assert.match(html, /邯郸闫老师高中数学物理家教/);
-    assert.match(html, /闫奕龙/);
+    assert.match(html, /教师称呼：闫老师/);
+    assert.doesNotMatch(html, /闫奕龙/);
+    assert.match(html, /河北师范大学/);
+    assert.match(html, /教育学/);
     assert.match(html, /河北省邯郸市涉县/);
     assert.match(html, /邯郸市全地区/);
   });
@@ -110,7 +113,10 @@ describe("static route prerendering", () => {
     assert.match(html, /<h1>邯郸闫老师高中数学物理家教<\/h1>/);
     assert.match(html, /<title>邯郸闫老师高中数学物理家教｜YAN TUTOR<\/title>/);
     assert.match(html, /<link rel="canonical" href="https:\/\/seventeen-yan\.cn\/tutor" \/>/);
-    assert.match(html, /闫奕龙/);
+    assert.match(html, /闫老师/);
+    assert.doesNotMatch(html, /闫奕龙/);
+    assert.match(html, /河北师范大学/);
+    assert.match(html, /教育学/);
     assert.match(html, /河北省邯郸市涉县/);
     assert.match(html, /邯郸市全地区/);
     assert.match(html, /href="\/faq"/);
@@ -143,10 +149,19 @@ describe("static route prerendering", () => {
     assert.match(html, /<h1>学习内容<\/h1>/);
     assert.match(html, /LEARN-001/);
     assert.match(html, /FAM-H1-MATH-DIAGNOSIS/);
-    assert.match(html, /作者：闫奕龙/);
+    assert.match(html, /作者：闫老师/);
+    assert.doesNotMatch(html, /闫奕龙/);
     assert.match(html, /更新时间：2026-07-15/);
     assert.match(html, /来源：ENTITY-PROFILE、CASE-EVID-001/);
     assert.doesNotMatch(html, /板书占位/);
+  });
+
+  it("does not expose the private real name in any prerendered public route", () => {
+    for (const route of getStaticRoutes()) {
+      const html = renderStaticRouteHtml(template, route, entityProfile.website.origin);
+
+      assert.doesNotMatch(html, /闫奕龙/, `${route.path} should use public teacher naming`);
+    }
   });
 
   it("renders an index-safe static 404 page outside the sitemap routes", () => {

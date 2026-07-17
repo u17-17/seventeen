@@ -97,7 +97,7 @@
 | 批次 | 日期 | 执行问题 | 执行人 | 记录位置 | 状态 |
 |---|---|---|---|---|---|
 | BASELINE-v1 | 2026-07-15 | CORE-v1 六题 | Codex | `docs/evidence/BASELINE-v1/REPORT.md` | 已完成：E0 × 6 |
-| WEBSITE-v1 | 待定 | CORE-v1 | 待定 | 待定 | 未执行 |
+| WEBSITE-v1 | 2026-07-17 | CORE-v1 | Codex | `docs/evidence/WEBSITE-v1/REPORT.md` | 已完成：E0 × 6 |
 | BYTE-TEXT-v1 | 待定 | CORE-v1 | 待定 | 待定 | 未执行 |
 | BYTE-MEDIA-v1 | 待定 | CORE-v1 | 待定 | 待定 | 未执行 |
 | BAIDU-AUX-v1 | 待定 | CORE-v1 | 待定 | 待定 | 未执行 |

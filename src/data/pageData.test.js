@@ -100,6 +100,7 @@ describe("static page data", () => {
         new RegExp(teacherFact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
       );
     }
+    assert.equal(serialized.includes("闫奕龙"), false);
     assert.match(serialized, /不展示.*照片/);
     assert.match(serialized, /当前展示年龄为 22 岁/);
   });

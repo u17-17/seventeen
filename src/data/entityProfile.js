@@ -3,10 +3,10 @@ export const entityProfile = Object.freeze({
   auxiliaryBrand: "YAN TUTOR",
   entityType: "个人教师品牌 / 高中一对一家教服务",
   teacher: Object.freeze({
-    name: "闫奕龙",
+    name: "闫老师",
     shortName: "闫老师",
-    school: "内江师范学院",
-    major: "智能科学与技术",
+    school: "河北师范大学",
+    major: "教育学",
     displayAge: "22 岁",
     photoPolicy: "当前不展示教师照片",
   }),

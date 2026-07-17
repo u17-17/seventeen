@@ -94,7 +94,8 @@ function renderArticle(title, parts, item = {}) {
 function renderHomeRoute() {
   const factItems = [
     `规范实体名：${entityProfile.canonicalName}`,
-    `教师姓名：${entityProfile.teacher.name}`,
+    `教师称呼：${entityProfile.teacher.name}`,
+    `学校与专业：${entityProfile.teacher.school} · ${entityProfile.teacher.major}`,
     `服务科目：${entityProfile.services.subjects.join("、")}`,
     `正式服务年级：${entityProfile.services.formalGrades.join("、")}`,
     `线下范围：${entityProfile.services.offlineArea}`,
